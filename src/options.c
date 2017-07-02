@@ -1,0 +1,51 @@
+#include "hls.h"
+
+char			*opt_filter(char *av)
+{
+	char		a;
+	char		*outp;
+	int			i;
+
+	i = 0;
+	if (!(outp = ft_strnew(6)))
+		return (NULL);
+	while ((a = av[++i]) != 0)
+		if (a != 'l' && a != 'R' && a != 'a' && a != 'r' && a != 't')
+		{
+			free(outp);
+			ft_putstr("ft_ls: invalid option -- '");
+			ft_putchar(a);
+			ft_putstr("'\nTry 'ls --help' for more information.\n");
+			exit(0);
+		}
+		else
+		{
+			outp[A] = (a == 'a') ? outp[A] + 1 : outp[A];
+			outp[L] = (a == 'l') ? outp[L] + 1 : outp[L];
+			outp[REC] = (a == 'R') ? outp[REC] + 1 : outp[REC];
+			outp[REV] = (a == 'r') ? outp[REV] + 1 : outp[REV];
+			outp[T] = (a == 't') ? outp[T] + 1 : outp[T] ;
+		}
+	return (outp);
+}
+
+char			*get_opt(int ac, char **av)
+{
+	int			iav;
+	int			witness;
+	char		*outp;
+
+	iav = 0;
+	witness = 0;
+	while (iav < ac && av[iav])
+	{
+		if (av[iav][0] != '-')
+			iav++;
+		else
+			if (!(outp = opt_filter(av[iav++])) || ++witness == 0)
+				return (NULL);
+	}
+	if (witness == 0)
+		return (NULL);
+	return (outp);
+}
