@@ -30,22 +30,158 @@ char			*mknam(char *s1, char *s2)
 	return (outp);
 }
 
-void			printd(int *order, struct dirent **content, int qty, char *opt)
+int				*printd(struct dirent **file, int qty, char *opt)
 {
 	int			i;
-	int			witness;
+	int			*order;
 
+	order = sort(opt, file, qty);
 	i = 0;
 	while (++i < qty)
-		if (content[order[i]]->d_name[0] != '.' || (opt && opt[A]))
+		if (file[order[i]]->d_name[0] != '.' || (opt && opt[A]))
 		{
 			if (i % 6 == 0 && i != 0)
 				ft_putchar('\n');
-			ft_putstr_cat(content[order[i]]->d_name, NULL, NULL, witness++ * 0);
-			ft_putnbr(content[order[i]]->d_type);
+			ft_putstr_cat(file[order[i]]->d_name, NULL, NULL, 0);
+//			ft_putnbr(file[order[i]]->d_type);
 			ft_putchar('\t');
 		}
 	ft_putchar('\n');
+	return (order);
+}
+
+char			*translate_mod(int st_mode, char *str, char a)
+{
+	int			mod[3] = {0};
+	int			i;
+
+	i = 3;
+	str[0] = a;
+	mod[0] = st_mode % 8;
+	mod[1] = ((st_mode - mod[0]) % 64) / 8;
+	mod[2] = (st_mode - mod[0] - mod[1] * 8) / 64;
+	while (--i >= 0)
+		if (mod[i] == 1)
+			ft_strncat(str, "--x", 3);
+		else if (mod[i] == 2)
+			ft_strncat(str, "-w-", 3);
+		else if (mod[i] == 3)
+			ft_strncat(str, "-wx", 3);
+		else if (mod[i] == 4)
+			ft_strncat(str, "r--", 3);
+		else if (mod[i] == 5)
+			ft_strncat(str, "r-x", 3);
+		else if (mod[i] == 6)
+			ft_strncat(str, "rw-", 3);
+		else if (mod[i] == 7)
+			ft_strncat(str, "rwx", 3);
+	return (NULL);
+}
+
+void			append_uid_gid(char *str, int uid, int gid, long int *lns)
+{
+	struct group	*g_info;
+	struct passwd	*u_info;
+	int				i;
+
+	g_info = getgrgid(gid);
+	u_info = getpwuid(uid);
+	ft_strncat(str, u_info->pw_name, i = ft_strlen(u_info->pw_name));
+	while (i++ < lns[UID_LEN] + 1)
+		ft_strncat(str, " ", 1);
+	ft_strncat(str, g_info->gr_name, i = ft_strlen(g_info->gr_name));
+	while (i++ < lns[GID_LEN] + 1)
+		ft_strncat(str, " ", 1);
+}
+
+/*
+void			append_time(char *str, struct timespec st_mtim)
+{
+	time_t		file_time;
+	time_t		curr_time;
+
+	curr_time = time(0);
+}*/
+
+char			*getstat(struct stat statf, char *str, long int *lengths)
+{
+	int			i;
+	
+	ft_bzero(str, 50);
+	i = 0;
+	if (statf.st_mode == 41471)
+		ft_strncat(str, "lrwxrwxrwx", 11);
+	else if (statf.st_mode < 40000 && statf.st_mode >= 32768 &&
+		1 + (statf.st_mode -= 32768))
+			translate_mod(statf.st_mode, str, '-');
+	else if (statf.st_mode < 32768 && 1 + (statf.st_mode -= 16384))
+		translate_mod(statf.st_mode, str, 'd');
+	ft_strncat(str, " ", 1);
+	ft_strncat(str, ft_itoa((int)statf.st_nlink), (i = ft_intlen((int)statf.st_nlink)));
+	while (i++ < lengths[SIZ_LEN] + 1)
+		ft_strncat(str, " ", 1);
+	append_uid_gid(str, statf.st_uid, statf.st_gid, lengths);
+//	append_time(str, statf.st_mtim);
+	return (str);
+}
+
+int			compare_stock(lsi *d, stats *statf, pass uid, grps gid, dirs fil)
+{
+	if (d && uid && gid)
+	{
+		if (statf.st_size > d[0] && (fil[i]->d_name[0] != '.' || (o && o[A])))
+			d[0] = statf.st_size;
+		d[UID_LEN] = COMPARE(d[UID_LEN], (long int)ft_strlen(ui->pw_name));
+		d[GID_LEN] = COMPARE(d[GID_LEN], (long int)ft_strlen(gi->gr_name))	}
+}
+
+long int 	*len_infos(char *nam, struct dirent **fil, int qty, char *o)
+{
+	long int			*d;
+	long int			i;
+	struct stat			statf;
+	struct passwd		*ui;
+	struct group		*gi;
+
+	if (!(d = malloc(sizeof(long int) * 5)))
+		return NULL;
+	i = 0;
+	ft_bzero(d, sizeof(long int) * 4);
+	while (++i < qty)
+	{
+		if (lstat(mknam(nam, fil[i]->d_name), &statf) != 0 && (d[3] = 1))
+			break;
+		ui = getpwuid(statf.st_uid);
+		gi = getgrgid(statf.st_gid);
+		compare_stock(d, statf, ui, gi, fil[i]);
+	}
+	i = 1;
+	while (d[0] % i != d[0] && ++d[3])
+		i *= 10;
+	return d;
+}
+
+int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
+{
+	int						i;
+	int				*order;
+	struct stat		statf;
+	char			*str_stat;
+	long int	*infos_len;
+
+	if (!(str_stat = malloc(50 * sizeof(char))))
+		return (NULL);
+	i = 0;
+	order = sort(opt, file, qty);
+	infos_len = len_infos(nam, file, qty, opt);
+	while (++i < qty)
+		if ((file[order[i]]->d_name[0] != '.' || (opt && opt[A])) &&
+				!lstat(mknam(nam, file[order[i]]->d_name), &statf))
+					ft_putstr_cat((str_stat = getstat(statf, str_stat,
+						infos_len)), NULL, file[order[i]]->d_name, 1);
+	ft_putchar('\n');
+	free(infos_len);
+	return (order);
 }
 
 void			list_tool(char *opt, struct dirent **content, char *nam, int qty)
@@ -54,9 +190,13 @@ void			list_tool(char *opt, struct dirent **content, char *nam, int qty)
 	char			*tmp;
 	int				i;
 
-	order = sort(opt, content, qty);
-	printd(order, content, qty, opt);
+	if (opt && opt[L])
+		order = printd_l(nam, content, qty, opt);
+	else
+		order = printd(content, qty, opt);
 	i = -1;
+	if (!order)
+		return ;
 	while (++i < qty && (opt && opt[REC]))
 		if (content[order[i]]->d_type == 4 && (((opt && opt[REC]) &&
 				(ft_strcmp(content[order[i]]->d_name, ".") != 0 &&

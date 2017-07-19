@@ -34,16 +34,13 @@ $(OBJPATH)/%.o: $(SRCPATH)/%.c
 
 $(NAME): $(DIR_OBJ)
 	@make -C libft
-	@make -C $(MLXPATH)
 	@$(COMP) $(DIR_OBJ) -o $(NAME) $(INCMAC) $(LIBFT) $(FLAGS)
 
 clean:
-	@make clean -C $(MLXPATH)
 	@make clean -C libft
 	@rm -rf $(OBJ)
 
 fclean:
-	@make clean -C $(MLXPATH)
 	@make fclean -C libft
 	@rm -rf $(DIR_OBJ)
 

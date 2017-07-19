@@ -4,11 +4,16 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <string.h>
+# include <sys/stat.h>
 # include <dirent.h>
+# include <time.h>
+# include <grp.h>
+# include <pwd.h>
 # include "libft.h"
 
 /*
 ** DEFINED VALUES
+** ==============
 */
 
 # define I 0
@@ -21,22 +26,48 @@
 # define REC 3
 # define T 4
 
+# define UID_LEN 1
+# define GID_LEN 2
+# define SIZ_LEN 3
+
+/*
+** /!\SYSTEM DEPENDANT /!\
+** =======================
+*/
+
+/*
+** MACs
+** ====
+*/
+
+/*
+** ARCH
+** ====
+*/
+
+
 /*
 ** DECLARATIONS
+** ============
 */
 
 /*
-** STRUCT
+** MACROS
+** ======
 */
 
-typedef struct 		s_dir
-{
-	char			*name;
-	DIR				*dd;
-	int				files_qty;
-	struct dirent	**files;
-	struct s_dir	**sub;
-}					t_dir;
+#define COMPARE(a, b) ((a < b) ? b : a)
+
+/*
+** TYPEDEFS
+** ========
+*/
+
+typedef struct passwd pass;
+typedef struct group grps;
+typedef struct dirent dirs;
+typedef struct stat stats;
+typedef long int lsi;
 
 int					*sort(char *opt, struct dirent **inp, int qty);
 char				*get_opt(int ac, char **av);

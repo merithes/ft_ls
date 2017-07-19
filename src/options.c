@@ -1,14 +1,15 @@
 #include "hls.h"
 
-char			*opt_filter(char *av)
+char			*opt_filter(char *av, char *inp)
 {
 	char		a;
 	char		*outp;
 	int			i;
 
 	i = 0;
-	if (!(outp = ft_strnew(6)))
-		return (NULL);
+	if (!(outp = inp))
+		if (!(outp = ft_strnew(6)))
+			return (NULL);
 	while ((a = av[++i]) != 0)
 		if (a != 'l' && a != 'R' && a != 'a' && a != 'r' && a != 't')
 		{
@@ -37,12 +38,13 @@ char			*get_opt(int ac, char **av)
 
 	iav = 0;
 	witness = 0;
+	outp = NULL;
 	while (iav < ac && av[iav])
 	{
 		if (av[iav][0] != '-')
 			iav++;
 		else
-			if (!(outp = opt_filter(av[iav++])) || ++witness == 0)
+			if (!(outp = opt_filter(av[iav++], outp)) || ++witness == 0)
 				return (NULL);
 	}
 	if (witness == 0)
