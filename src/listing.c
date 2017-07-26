@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/26 18:22:20 by vboivin           #+#    #+#             */
-/*   Updated: 2017/07/26 19:41:04 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/07/26 22:17:13 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ int				*printd(struct dirent **file, int qty, char *opt)
 		{
 			ft_putstr(file[order[i]]->d_name);
 			ft_putchar('\t');
+			if (i && !(i % 4))
+				ft_putchar('\n');
 		}
 	ft_putchar('\n');
 	return (order);
@@ -143,6 +145,7 @@ void			append_size(char *str, stats statf, long int *lengths)
 char			*getstat(struct stat statf, char *str, long int *lengths)
 {
 	int			i;
+	char		*tmp;
 
 	ft_bzero(str, STRSIZE);
 	i = 0;
@@ -154,8 +157,9 @@ char			*getstat(struct stat statf, char *str, long int *lengths)
 	else if (statf.st_mode < 32768 && 1 + (statf.st_mode -= 16384))
 		translate_mod(statf.st_mode, str, 'd');
 	ft_strncat(str, " ", 1);
-	ft_strncat(str, ft_itoa((int)statf.st_nlink),
+	ft_strncat(str, tmp = ft_itoa((int)statf.st_nlink),
 		(i = ft_intlen((int)statf.st_nlink)));
+	free(tmp);
 	while (i++ < lengths[LNK_LEN] + 1)
 		ft_strncat(str, " ", 1);
 	append_uid_gid(str, statf.st_uid, statf.st_gid, lengths);
@@ -242,8 +246,9 @@ void			list_tool(char *opt, struct dirent **content,
 	int				*order;
 	char			*tmp;
 	int				i;
+	DIR				*direc;
 
-	if (opt && opt[L] && (i = -1))
+	if ((i = -1) && opt && opt[L])
 		order = printd_l(nam, content, qty, opt);
 	else
 		order = printd(content, qty, opt);
@@ -256,14 +261,11 @@ void			list_tool(char *opt, struct dirent **content,
 						((content[order[i]]->d_name[0] != '.') ||
 							(opt && opt[A]))))
 		{
-			list_dir(opt, (tmp = mknam(nam, content[order[i]]->d_name)));
+			if ((direc = opendir(tmp = mknam(nam, content[order[i]]->d_name))))
+				list_dir(opt, tmp, direc, 1);
 			free(tmp);
 		}
-	i = 0;
-	while (content[i++])
-		free(content[i]);
 	free(order);
-	free(content);
 }
 
 struct dirent	**realloc_dirent(struct dirent **inp, int size)
@@ -296,7 +298,7 @@ struct dirent	*mem_make_dirent(struct dirent *inp)
 	return (outp);
 }
 
-void			list_dir(char *opt, char *av)
+void			list_dir(char *opt, char *av, DIR *inp, int is_inp_not_null)
 {
 	int				i;
 	DIR				*dir_id;
@@ -307,7 +309,7 @@ void			list_dir(char *opt, char *av)
 		return ;
 	if (opt && opt[REC])
 		ft_putstr_cat(av, ":", NULL, 1);
-	dir_id = opendir(av);
+	dir_id = (is_inp_not_null) ? inp : opendir(av);
 	while (++i >= 0)
 	{
 		if (!(readtab[i] = mem_make_dirent(readdir(dir_id))))
@@ -316,4 +318,9 @@ void			list_dir(char *opt, char *av)
 			readtab = realloc_dirent(readtab, i + 5);
 	}
 	list_tool(opt, readtab, av, i);
+	i = 0;
+	while (readtab[i++])
+		free(readtab[i]);
+	free(readtab);
+	closedir(dir_id);
 }

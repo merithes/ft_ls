@@ -1,26 +1,26 @@
 #include "hls.h"
 
-void				check_ds(int cnt, char **tab)
+int					check_dirs(char *tab, int do_i_speak)
 {
-	int				i;
+	stats			statf;
 	DIR				*dir_id;
 
-	i = 0;
-	while (++i < cnt)
+	if (!(dir_id = opendir(tab)))
 	{
-		if (tab[i][0] != '-')
+		if (lstat(tab, &statf))
 		{
-			if (!(dir_id = opendir(tab[i])))
-			{
-				ft_putstr("ft_ls: cannot access '");
-				ft_putstr(tab[i]);
-				ft_putstr("': No such file or directory.\n");
-				exit(0);
-			}
-			else
-				closedir(dir_id);
+			if (do_i_speak)
+				ft_putstr_cat(NEXIST_1, tab, NEXIST_2, 1);
 		}
+		else
+			if (do_i_speak)
+				ft_putstr_cat(NPERMS_1, tab, NPERMS_2, 1);
+		return (0);
 	}
+	else
+		closedir(dir_id);
+	return (1);
+
 }
 
 int					main(int ac, char **av)
@@ -29,10 +29,12 @@ int					main(int ac, char **av)
 	int				i;
 
 	i = 0;
+	opt = NULL;
 	opt = get_opt(ac, av);
-	check_ds(ac, av);
 	while (++i < ac)
-		if (av[i][0] != '-')
-			list_dir(opt, av[i]);
+		if (av[i][0] != '-' && check_dirs(av[i], 1))
+			list_dir(opt, av[i], NULL, 0);
+	if (opt)
+		free(opt);
 	return 0;
 }

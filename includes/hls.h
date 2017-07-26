@@ -34,8 +34,7 @@
 # define LNK_LEN 5
 # define BLK_CNT 6
 
-# define MAX_LENS 7
-# define SIX_MONTH 15552000
+# define MAX_LENS 8
 # define STRSIZE 766
 
 /*
@@ -43,10 +42,21 @@
 ** =======================
 */
 
+# define NEXIST_1 MAC_NEXIST_1
+# define NEXIST_2 MAC_NEXIST_2
+# define NPERMS_1 MAC_NPERMS_1
+# define NPERMS_2 MAC_NPERMS_2
+
 /*
 ** MACs
 ** ====
 */
+# define SIX_MONTH 15552000
+# define MAC_NEXIST_1 "ft_ls: cannot access '"
+# define MAC_NEXIST_2 "': no such file or directory"
+# define MAC_NPERMS_1 "ft_ls: cannot open directory '"
+# define MAC_NPERMS_2 "': Permission denied"
+
 
 /*
 ** ARCH
@@ -79,6 +89,6 @@ typedef long int lsi;
 
 int					*sort(char *opt, struct dirent **inp, int qty);
 char				*get_opt(int ac, char **av);
-void				list_dir(char *a, char *b);
+void				list_dir(char *a, char *b, DIR *inp, int is_inp_not_null);
 
 #endif
