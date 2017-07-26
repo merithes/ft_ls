@@ -40,8 +40,6 @@ int				*printd(struct dirent **file, int qty, char *opt)
 	while (++i < qty)
 		if (file[order[i]]->d_name[0] != '.' || (opt && opt[A]))
 		{
-			if (i % 6 == 0 && i != 0)
-				ft_putchar('\n');
 			ft_putstr_cat(file[order[i]]->d_name, NULL, NULL, 0);
 //			ft_putnbr(file[order[i]]->d_type);
 			ft_putchar('\t');
@@ -118,45 +116,53 @@ char			*getstat(struct stat statf, char *str, long int *lengths)
 		translate_mod(statf.st_mode, str, 'd');
 	ft_strncat(str, " ", 1);
 	ft_strncat(str, ft_itoa((int)statf.st_nlink), (i = ft_intlen((int)statf.st_nlink)));
-	while (i++ < lengths[SIZ_LEN] + 1)
+	while (i++ < lengths[LNK_LEN] + 1)
 		ft_strncat(str, " ", 1);
 	append_uid_gid(str, statf.st_uid, statf.st_gid, lengths);
 //	append_time(str, statf.st_mtim);
 	return (str);
 }
 
-int			compare_stock(lsi *d, stats *statf, pass uid, grps gid, dirs fil)
+int			compare_stock(lsi *d, stats statf, dirs *fil, char *o)
 {
+	struct passwd		*uid;
+	struct group		*gid;
+
+
+	uid = getpwuid(statf.st_uid);
+	gid = getgrgid(statf.st_gid);
 	if (d && uid && gid)
 	{
-		if (statf.st_size > d[0] && (fil[i]->d_name[0] != '.' || (o && o[A])))
-			d[0] = statf.st_size;
-		d[UID_LEN] = COMPARE(d[UID_LEN], (long int)ft_strlen(ui->pw_name));
-		d[GID_LEN] = COMPARE(d[GID_LEN], (long int)ft_strlen(gi->gr_name))	}
+		if (statf.st_size > d[0] && (fil->d_name[0] != '.' || (o && o[A])))
+			d[SIZ_TMP] = statf.st_size;
+		d[UID_LEN] = COMPARE(d[UID_LEN], (long int)ft_strlen(uid->pw_name));
+		d[GID_LEN] = COMPARE(d[GID_LEN], (long int)ft_strlen(gid->gr_name));
+		d[LNK_TMP] = COMPARE((size_t)d[LNK_TMP], statf.st_nlink);
+	}
+	return 0;
 }
 
 long int 	*len_infos(char *nam, struct dirent **fil, int qty, char *o)
 {
 	long int			*d;
-	long int			i;
 	struct stat			statf;
-	struct passwd		*ui;
-	struct group		*gi;
+	int					i;
 
-	if (!(d = malloc(sizeof(long int) * 5)))
+	if (!(d = malloc(sizeof(long int) * (MAX_LENS + 1))))
 		return NULL;
 	i = 0;
-	ft_bzero(d, sizeof(long int) * 4);
+	ft_bzero(d, sizeof(long int) * MAX_LENS);
 	while (++i < qty)
 	{
 		if (lstat(mknam(nam, fil[i]->d_name), &statf) != 0 && (d[3] = 1))
 			break;
-		ui = getpwuid(statf.st_uid);
-		gi = getgrgid(statf.st_gid);
-		compare_stock(d, statf, ui, gi, fil[i]);
+		compare_stock(d, statf, fil[i], o);
 	}
 	i = 1;
-	while (d[0] % i != d[0] && ++d[3])
+	while (d[SIZ_TMP] % i != d[SIZ_TMP] && ++d[SIZ_LEN])
+		i *= 10;
+	i = 1;
+	while (d[LNK_TMP] % i != d[LNK_TMP] && ++d[LNK_LEN])
 		i *= 10;
 	return d;
 }
@@ -167,9 +173,9 @@ int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 	int				*order;
 	struct stat		statf;
 	char			*str_stat;
-	long int	*infos_len;
+	long int		*infos_len;
 
-	if (!(str_stat = malloc(50 * sizeof(char))))
+	if (!(str_stat = malloc(512 * sizeof(char))))
 		return (NULL);
 	i = 0;
 	order = sort(opt, file, qty);
@@ -178,7 +184,7 @@ int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 		if ((file[order[i]]->d_name[0] != '.' || (opt && opt[A])) &&
 				!lstat(mknam(nam, file[order[i]]->d_name), &statf))
 					ft_putstr_cat((str_stat = getstat(statf, str_stat,
-						infos_len)), NULL, file[order[i]]->d_name, 1);
+						infos_len)), , file[order[i]]->d_name, 1);
 	ft_putchar('\n');
 	free(infos_len);
 	return (order);
@@ -225,6 +231,21 @@ struct dirent	**realloc_dirent(struct dirent **inp, int size)
 	return (outp);
 }
 
+struct dirent	*mem_make_dirent(struct dirent *inp)
+{
+	struct dirent *outp;
+
+	if (inp)
+	{
+		if (!(outp = malloc(sizeof(struct dirent))))
+			return (NULL);
+		ft_memcpy(outp, inp, sizeof(struct dirent));
+	}
+	else
+		return (NULL);
+	return (outp);
+}
+
 void			list_dir(char *opt, char *av)
 {
 	int				i;
@@ -239,7 +260,7 @@ void			list_dir(char *opt, char *av)
 	dir_id = opendir(av);
 	while (++i >= 0)
 	{
-		if (!(readtab[i] = readdir(dir_id)))
+		if (!(readtab[i] = mem_make_dirent(readdir(dir_id))))
 			break ;
 		if ((i + 1) % 5 == 0 && i != 0)
 			readtab = realloc_dirent(readtab, i + 5);

@@ -28,7 +28,13 @@
 
 # define UID_LEN 1
 # define GID_LEN 2
+# define SIZ_TMP 0
 # define SIZ_LEN 3
+# define LNK_TMP 4
+# define LNK_LEN 5
+# define BLK_CNT 6
+
+# define MAX_LENS 7
 
 /*
 ** /!\SYSTEM DEPENDANT /!\

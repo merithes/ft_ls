@@ -89,6 +89,7 @@ int					ft_lenchar(int start, char *str, int c);
 void				ft_foreach(int *tab, int length, void (*f)(int));
 void				ft_swap(int *a, int *b);
 unsigned int		ft_intlen(int nb);
+long int			ft_lintlen(long int nb);
 
 int					ft_isalpha(int c);
 int					ft_isdigit(int c);
