@@ -1,12 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   listing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/07/26 18:22:20 by vboivin           #+#    #+#             */
+/*   Updated: 2017/07/26 19:41:04 by vboivin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "hls.h"
 
-struct dirent	**_filter(char *inp)
+struct dirent	**f_ilter(char *inp)
 {
 	struct dirent	**tab_out;
 
 	if (!inp || inp[0] == '-')
-		return NULL;
-	if(!(tab_out = malloc(sizeof(struct dirent *) * 6)))
+		return (NULL);
+	if (!(tab_out = malloc(sizeof(struct dirent *) * 6)))
 	{
 		ft_putstr("Lacking memory to properly process\n");
 		return (NULL);
@@ -21,7 +33,8 @@ char			*mknam(char *s1, char *s2)
 	int			len;
 
 	len = ft_strlen(s1) + ft_strlen(s2) + 2;
-	(outp = ft_strnew(len));
+	if (!(outp = ft_strnew(len)))
+		return (NULL);
 	ft_bzero(outp, len);
 	if (ft_strcmp(s1, "/"))
 		ft_strcpy(outp, s1);
@@ -40,8 +53,7 @@ int				*printd(struct dirent **file, int qty, char *opt)
 	while (++i < qty)
 		if (file[order[i]]->d_name[0] != '.' || (opt && opt[A]))
 		{
-			ft_putstr_cat(file[order[i]]->d_name, NULL, NULL, 0);
-//			ft_putnbr(file[order[i]]->d_type);
+			ft_putstr(file[order[i]]->d_name);
 			ft_putchar('\t');
 		}
 	ft_putchar('\n');
@@ -50,10 +62,11 @@ int				*printd(struct dirent **file, int qty, char *opt)
 
 char			*translate_mod(int st_mode, char *str, char a)
 {
-	int			mod[3] = {0};
+	int			mod[3];
 	int			i;
 
 	i = 3;
+	ft_bzero(mod, sizeof(int) * 3);
 	str[0] = a;
 	mod[0] = st_mode % 8;
 	mod[1] = ((st_mode - mod[0]) % 64) / 8;
@@ -92,42 +105,69 @@ void			append_uid_gid(char *str, int uid, int gid, long int *lns)
 		ft_strncat(str, " ", 1);
 }
 
-/*
-void			append_time(char *str, struct timespec st_mtim)
+void			append_time(char *str, stats statf)
 {
-	time_t		file_time;
-	time_t		curr_time;
+	char time_alpha[23];
 
-	curr_time = time(0);
-}*/
+	ft_bzero(time_alpha, sizeof(char) * 23);
+	if (statf.st_mtime + SIX_MONTH > time(0))
+		ft_strncat(str, ctime(&statf.st_mtime) + 4, 12);
+	else
+	{
+		strcpy(time_alpha, ctime(&statf.st_mtime) + 4);
+		time_alpha[7] = ' ';
+		time_alpha[8] = time_alpha[16];
+		time_alpha[9] = time_alpha[17];
+		time_alpha[10] = time_alpha[18];
+		time_alpha[11] = time_alpha[19];
+		time_alpha[12] = 0;
+		ft_strcat(str, time_alpha);
+	}
+	ft_strncat(str, " ", 1);
+}
+
+void			append_size(char *str, stats statf, long int *lengths)
+{
+	char		*size_alpha;
+	size_t		len;
+
+	if (!(size_alpha = ft_litoa(statf.st_size)))
+		return ;
+	len = ft_strlen(size_alpha);
+	ft_strncat(str, size_alpha, len);
+	free(size_alpha);
+	while ((long int)len++ <= lengths[SIZ_LEN])
+		ft_strncat(str, " ", 1);
+}
 
 char			*getstat(struct stat statf, char *str, long int *lengths)
 {
 	int			i;
-	
-	ft_bzero(str, 50);
+
+	ft_bzero(str, STRSIZE);
 	i = 0;
 	if (statf.st_mode == 41471)
 		ft_strncat(str, "lrwxrwxrwx", 11);
 	else if (statf.st_mode < 40000 && statf.st_mode >= 32768 &&
 		1 + (statf.st_mode -= 32768))
-			translate_mod(statf.st_mode, str, '-');
+		translate_mod(statf.st_mode, str, '-');
 	else if (statf.st_mode < 32768 && 1 + (statf.st_mode -= 16384))
 		translate_mod(statf.st_mode, str, 'd');
 	ft_strncat(str, " ", 1);
-	ft_strncat(str, ft_itoa((int)statf.st_nlink), (i = ft_intlen((int)statf.st_nlink)));
+	ft_strncat(str, ft_itoa((int)statf.st_nlink),
+		(i = ft_intlen((int)statf.st_nlink)));
 	while (i++ < lengths[LNK_LEN] + 1)
 		ft_strncat(str, " ", 1);
 	append_uid_gid(str, statf.st_uid, statf.st_gid, lengths);
-//	append_time(str, statf.st_mtim);
+	append_size(str, statf, lengths);
+	append_time(str, statf);
 	return (str);
 }
 
-int			compare_stock(lsi *d, stats statf, dirs *fil, char *o)
+int				compare_stock(lsi *d, stats statf, dirs *fil, char *o)
 {
 	struct passwd		*uid;
 	struct group		*gid;
-
 
 	uid = getpwuid(statf.st_uid);
 	gid = getgrgid(statf.st_gid);
@@ -139,23 +179,25 @@ int			compare_stock(lsi *d, stats statf, dirs *fil, char *o)
 		d[GID_LEN] = COMPARE(d[GID_LEN], (long int)ft_strlen(gid->gr_name));
 		d[LNK_TMP] = COMPARE((size_t)d[LNK_TMP], statf.st_nlink);
 	}
-	return 0;
+	return (0);
 }
 
-long int 	*len_infos(char *nam, struct dirent **fil, int qty, char *o)
+long int		*len_infos(char *nam,
+				struct dirent **fil, int qty, char *o)
 {
 	long int			*d;
 	struct stat			statf;
+	char				*nam_made;
 	int					i;
 
-	if (!(d = malloc(sizeof(long int) * (MAX_LENS + 1))))
-		return NULL;
-	i = 0;
+	if (!(d = malloc(sizeof(long int) *
+		(MAX_LENS + 1 + (i = 0)))))
+		return (NULL);
 	ft_bzero(d, sizeof(long int) * MAX_LENS);
-	while (++i < qty)
+	while (++i < qty && lstat(nam_made =
+		mknam(nam, fil[i]->d_name), &statf) == 0 && (d[3] = 1))
 	{
-		if (lstat(mknam(nam, fil[i]->d_name), &statf) != 0 && (d[3] = 1))
-			break;
+		free(nam_made);
 		compare_stock(d, statf, fil[i], o);
 	}
 	i = 1;
@@ -164,43 +206,47 @@ long int 	*len_infos(char *nam, struct dirent **fil, int qty, char *o)
 	i = 1;
 	while (d[LNK_TMP] % i != d[LNK_TMP] && ++d[LNK_LEN])
 		i *= 10;
-	return d;
+	return (d);
 }
 
 int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 {
-	int						i;
+	int				i;
 	int				*order;
 	struct stat		statf;
-	char			*str_stat;
+	char			*str_stat[2];
 	long int		*infos_len;
 
-	if (!(str_stat = malloc(512 * sizeof(char))))
+	if (!(str_stat[0] = malloc(STRSIZE * sizeof(char))))
 		return (NULL);
-	i = 0;
+	i = -1;
 	order = sort(opt, file, qty);
 	infos_len = len_infos(nam, file, qty, opt);
 	while (++i < qty)
-		if ((file[order[i]]->d_name[0] != '.' || (opt && opt[A])) &&
-				!lstat(mknam(nam, file[order[i]]->d_name), &statf))
-					ft_putstr_cat((str_stat = getstat(statf, str_stat,
-						infos_len)), , file[order[i]]->d_name, 1);
+		if ((file[order[i]]->d_name[0] != '.' || (opt && opt[A])) && !lstat(
+			str_stat[1] = mknam(nam, file[order[i]]->d_name), &statf))
+		{
+			free(str_stat[1]);
+			ft_putstr_cat((getstat(statf, str_stat[0], infos_len)), NULL
+					, file[order[i]]->d_name, 1);
+		}
 	ft_putchar('\n');
 	free(infos_len);
+	free(str_stat[0]);
 	return (order);
 }
 
-void			list_tool(char *opt, struct dirent **content, char *nam, int qty)
+void			list_tool(char *opt, struct dirent **content,
+				char *nam, int qty)
 {
 	int				*order;
 	char			*tmp;
 	int				i;
 
-	if (opt && opt[L])
+	if (opt && opt[L] && (i = -1))
 		order = printd_l(nam, content, qty, opt);
 	else
 		order = printd(content, qty, opt);
-	i = -1;
 	if (!order)
 		return ;
 	while (++i < qty && (opt && opt[REC]))
@@ -213,7 +259,11 @@ void			list_tool(char *opt, struct dirent **content, char *nam, int qty)
 			list_dir(opt, (tmp = mknam(nam, content[order[i]]->d_name)));
 			free(tmp);
 		}
+	i = 0;
+	while (content[i++])
+		free(content[i]);
 	free(order);
+	free(content);
 }
 
 struct dirent	**realloc_dirent(struct dirent **inp, int size)
@@ -253,7 +303,7 @@ void			list_dir(char *opt, char *av)
 	struct dirent	**readtab;
 
 	i = -1;
-	if (!(readtab = _filter(av)))
+	if (!(readtab = f_ilter(av)))
 		return ;
 	if (opt && opt[REC])
 		ft_putstr_cat(av, ":", NULL, 1);

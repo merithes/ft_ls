@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/04 14:49:03 by vboivin           #+#    #+#             */
-/*   Updated: 2017/03/30 18:06:50 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/07/26 16:49:01 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ void				ft_putnbr_fd(int nb, int fd);
 
 int					ft_atoi(const char *str);
 char				*ft_itoa(int nb);
+char				*ft_litoa(long int nb);
 void				ft_bzero(void *str, size_t bytes_to_set);
 int					ft_sqrt(int nb);
 int					ft_lenchar(int start, char *str, int c);

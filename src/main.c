@@ -15,6 +15,7 @@ void				check_ds(int cnt, char **tab)
 				ft_putstr("ft_ls: cannot access '");
 				ft_putstr(tab[i]);
 				ft_putstr("': No such file or directory.\n");
+				exit(0);
 			}
 			else
 				closedir(dir_id);

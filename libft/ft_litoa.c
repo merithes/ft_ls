@@ -6,27 +6,13 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/07 18:17:53 by vboivin           #+#    #+#             */
-/*   Updated: 2016/12/08 19:33:35 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/07/26 17:15:04 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static	int		ft_isneg(long nb)
-{
-	if (nb < 0)
-		return (1);
-	return (0);
-}
-
-static	int		ft_absol(long nb)
-{
-	if (nb < 0)
-		return (-nb);
-	return (nb);
-}
-
-static	int		ft_nblen(int nb)
+static	int		ft_nblen(long int nb)
 {
 	int		len;
 
@@ -39,26 +25,26 @@ static	int		ft_nblen(int nb)
 	return (len);
 }
 
-static	char	*ft_excep(int nb)
+static	char	*ft_excep(long int nb)
 {
-	if (nb == -2147483648)
-		return (ft_strdup("-2147483648"));
+	if (nb == (long int)(((unsigned long int) - 1) / 2 ) * -1)
+		return (ft_strdup("-9223372036854775807"));
 	else
 		return (ft_strdup("0"));
 }
 
-char			*ft_itoa(int nb)
+char			*ft_litoa(long int nb)
 {
 	char	*outp;
 	int		len;
 	int		isneg;
 
 	outp = NULL;
-	if (nb == 0 || nb == -2147483648)
+	if (nb == 0 || nb == (long int)(((unsigned long int) - 1) / 2 ) * -1)
 		return (ft_excep(nb));
-	isneg = ft_isneg(nb);
+	isneg = (nb < 0) ? 1 : 0;
 	len = ft_nblen(nb);
-	nb = (long)ft_absol(nb);
+	nb *= (nb < 0) ? -1 : 1;
 	outp = (char *)malloc(sizeof(char) * (len + isneg + 1));
 	if (outp)
 	{

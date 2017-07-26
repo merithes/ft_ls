@@ -6,7 +6,7 @@
 #    By: vboivin <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/02 19:24:22 by vboivin           #+#    #+#              #
-#    Updated: 2017/03/29 11:49:07 by vboivin          ###   ########.fr        #
+#    Updated: 2017/07/26 16:48:24 by vboivin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,8 @@ SRCC =	ft_atoi.c ft_bzero.c ft_foreach.c ft_intlen.c ft_isalnum.c ft_isalpha.c\
 		ft_strncmp.c ft_strncpy.c ft_strnequ.c ft_strnew.c ft_strnstr.c \
 		ft_strrchr.c ft_strsplit.c ft_strstr.c ft_strsub.c ft_strtrim.c \
 		ft_swap.c ft_tolower.c ft_toupper.c strchr_int.c free_join.c \
-		ft_realloc.c get_next_line.c ft_putstr_cat.c ft_putstrn.c ft_lintlen.c
+		ft_realloc.c get_next_line.c ft_putstr_cat.c ft_putstrn.c ft_lintlen.c\
+		ft_litoa.c
 
 SRCO =	$(SRCC:.c=.o)
 

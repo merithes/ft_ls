@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/04 19:12:22 by vboivin           #+#    #+#             */
-/*   Updated: 2016/12/11 18:37:44 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/07/26 11:43:33 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ size_t		ft_strlen(const char *str)
 	int		i;
 
 	i = 0;
-	while (*str)
-		str++ + i++ * 0;
+	while (str[i])
+		i++;
 	return (i);
 }

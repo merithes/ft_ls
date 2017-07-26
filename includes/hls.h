@@ -35,6 +35,8 @@
 # define BLK_CNT 6
 
 # define MAX_LENS 7
+# define SIX_MONTH 15552000
+# define STRSIZE 766
 
 /*
 ** /!\SYSTEM DEPENDANT /!\
