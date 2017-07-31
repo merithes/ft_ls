@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/26 18:22:20 by vboivin           #+#    #+#             */
-/*   Updated: 2017/07/31 19:35:22 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/07/31 21:16:26 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -329,7 +329,7 @@ void			list_dir(char *opt, char *av, DIR *inp, int context)
 	i = -1;
 	if (!(readtab = f_ilter(av)))
 		return ;
-	if ((opt && opt[REC]) || context >= 2)
+	if ((opt && opt[REC]) || context / 2)
 		ft_putstr_cat(av, ":", NULL, 1);
 	dir_id = (context % 2) ? inp : opendir(av);
 	while (++i >= 0)

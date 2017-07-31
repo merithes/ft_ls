@@ -26,7 +26,7 @@ void				print_solo_file(char **tab, int i, char *opt, stats statf)
 	}
 }
 
-int					check_dirs(char **tab, int i, char *opt, int *type)
+int					chk_d(char **tab, int i, char *opt, int *type)
 {
 	stats			statf;
 	DIR				*dir_id;
@@ -34,15 +34,10 @@ int					check_dirs(char **tab, int i, char *opt, int *type)
 	if (!(dir_id = opendir(tab[i])))
 	{
 		if (lstat(tab[i], &statf))
-		{
-			if (!type[0])
-				ft_putstr_cat(NEXIST_1, tab[i], NEXIST_2, 1);
-		}
+			(!type[0]) ? ft_putstr_cat(NEXIST_1, tab[i], NEXIST_2, 1) : 1;
 		else if (statf.st_mode >= S_IFREG && statf.st_mode < S_IFLNK)
-		{
-			if (type[0] && type[0] != 2 && (type[1] = 2))
-				print_solo_file(tab, i, opt, statf);
-		}
+			(type[0] && type[0] != 2 && (type[1] = 2)) ?
+				print_solo_file(tab, i, opt, statf) : 1;
 		else if (!type[0])
 			ft_putstr_cat(NPERMS_1, tab[i], NPERMS_2, 1);
 		return (0);
@@ -57,26 +52,25 @@ int					main(int ac, char **av)
 {
 	char			*opt;
 	int				i;
-	int				witness[3];
+	int				wit[3];
 	int				is_inp_a_file;
 
-	ft_bzero(witness, 3 * sizeof(int));
+	ft_bzero(wit, 3 * sizeof(int));
 	opt = NULL;
 	is_inp_a_file = 0;
 	opt = get_opt(ac, av);
-	while (!(i = 0) && witness[0] <= 1)
+	while (!(i = 0) && wit[0] <= 1)
 	{
-		while (++i < ac)
-			if (av[i][0] != '-')
-				witness[2] += (check_dirs(av, i, opt, witness) == 0) ? 1 : ac + 1; 
-		if (witness[0]++ && (witness[2] % (ac + 1)))
-			ft_putstr("\n");
+		while (av[++i])
+			(av[i][0] != '-') ? wit[2] += (chk_d(av, i, opt, wit) == 0) 1 : 180; 
+		(wit[0]++ && (wit[2] % 180)) ? ft_putstr("\n") : 1;
 	}
 	while (++i < ac)
 	{
-		if (av[i][0] != '-' && check_dirs(av, i, opt, witness))
-			list_dir(opt, av[i], NULL, 0 + witness[1] + (witness[2] / (ac + 1)) * 2);
-		(witness[2] / 2) ? ft_putchar('\n') : 1;
+		printf("%d\t%d\t%d\n", wit[0], wit[1], wit[2]);
+		if (av[i][0] != '-' && chk_d(av, i, opt, wit))
+			list_dir(opt, av[i], NULL, 0 + wit[1] + wit[2]);
+		(wit[2] / 2) ? ft_putchar('\n') : 1;
 	}
 	opt ? free(opt) : ac++;
 	return 0;
