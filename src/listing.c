@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/26 18:22:20 by vboivin           #+#    #+#             */
-/*   Updated: 2017/07/26 22:17:13 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/07/31 13:59:25 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,12 +149,12 @@ char			*getstat(struct stat statf, char *str, long int *lengths)
 
 	ft_bzero(str, STRSIZE);
 	i = 0;
-	if (statf.st_mode == 41471)
-		ft_strncat(str, "lrwxrwxrwx", 11);
-	else if (statf.st_mode < 40000 && statf.st_mode >= 32768 &&
-		1 + (statf.st_mode -= 32768))
+	if (statf.st_mode >= S_IFLNK && 1 + (statf.st_mode -= S_IFLNK))
+		translate_mod(statf.st_mode, str, 'l');
+	else if (statf.st_mode < S_IFLNK && statf.st_mode >= S_IFREG &&
+		1 + (statf.st_mode -= S_IFREG))
 		translate_mod(statf.st_mode, str, '-');
-	else if (statf.st_mode < 32768 && 1 + (statf.st_mode -= 16384))
+	else if (statf.st_mode < S_IFREG && 1 + (statf.st_mode -= S_IFDIR))
 		translate_mod(statf.st_mode, str, 'd');
 	ft_strncat(str, " ", 1);
 	ft_strncat(str, tmp = ft_itoa((int)statf.st_nlink),
