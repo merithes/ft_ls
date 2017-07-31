@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/26 18:22:20 by vboivin           #+#    #+#             */
-/*   Updated: 2017/07/31 13:59:25 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/07/31 19:35:22 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int				*printd(struct dirent **file, int qty, char *opt)
 		{
 			ft_putstr(file[order[i]]->d_name);
 			ft_putchar('\t');
-			if (i && !(i % 4))
+			if (i && !(i % 5) && i + 1 < qty)
 				ft_putchar('\n');
 		}
 	ft_putchar('\n');
@@ -213,12 +213,32 @@ long int		*len_infos(char *nam,
 	return (d);
 }
 
+char			*link_symlink(char *path_nam)
+{
+	stats		lstatf;
+	char		*outp;
+	char		buff[257];
+
+	ft_bzero(buff, 257);
+	outp = NULL;
+	if (lstat(path_nam, &lstatf))
+		return (NULL);
+//	printf("2\t%d\t%d\t%d\n%d\t%s\n", S_IFLNK, S_IFDIR, S_IFREG, lstatf.st_mode, path_nam);
+	if (lstatf.st_mode < S_IFLNK)
+		return (NULL);
+	else
+		outp = ft_strnew(readlink(path_nam, buff, 256) + 5);
+	ft_strcat(outp, " -> ");
+	ft_strcat(outp, buff);
+	return (outp);
+}
+
 int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 {
 	int				i;
 	int				*order;
 	struct stat		statf;
-	char			*str_stat[2];
+	char			*str_stat[3];
 	long int		*infos_len;
 
 	if (!(str_stat[0] = malloc(STRSIZE * sizeof(char))))
@@ -230,9 +250,11 @@ int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 		if ((file[order[i]]->d_name[0] != '.' || (opt && opt[A])) && !lstat(
 			str_stat[1] = mknam(nam, file[order[i]]->d_name), &statf))
 		{
-			free(str_stat[1]);
 			ft_putstr_cat((getstat(statf, str_stat[0], infos_len))
-				, file[order[i]]->d_name, NULL, 1);
+				, file[order[i]]->d_name
+					, str_stat[2] = link_symlink(str_stat[1]), 1);
+			free(str_stat[1]);
+			(str_stat[2] != NULL) ? free(str_stat[2]) : (void)0;
 		}
 	ft_putchar('\n');
 	free(infos_len);
@@ -298,7 +320,7 @@ struct dirent	*mem_make_dirent(struct dirent *inp)
 	return (outp);
 }
 
-void			list_dir(char *opt, char *av, DIR *inp, int is_inp_not_null)
+void			list_dir(char *opt, char *av, DIR *inp, int context)
 {
 	int				i;
 	DIR				*dir_id;
@@ -307,9 +329,9 @@ void			list_dir(char *opt, char *av, DIR *inp, int is_inp_not_null)
 	i = -1;
 	if (!(readtab = f_ilter(av)))
 		return ;
-	if (opt && opt[REC])
+	if ((opt && opt[REC]) || context >= 2)
 		ft_putstr_cat(av, ":", NULL, 1);
-	dir_id = (is_inp_not_null) ? inp : opendir(av);
+	dir_id = (context % 2) ? inp : opendir(av);
 	while (++i >= 0)
 	{
 		if (!(readtab[i] = mem_make_dirent(readdir(dir_id))))
