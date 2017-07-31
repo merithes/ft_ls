@@ -168,7 +168,7 @@ char			*getstat(struct stat statf, char *str, long int *lengths)
 	return (str);
 }
 
-int				compare_stock(lsi *d, stats statf, dirs *fil, char *o)
+int				compare_stock(lsi *d, stats statf, char *name, char *o)
 {
 	struct passwd		*uid;
 	struct group		*gid;
@@ -177,7 +177,7 @@ int				compare_stock(lsi *d, stats statf, dirs *fil, char *o)
 	gid = getgrgid(statf.st_gid);
 	if (d && uid && gid)
 	{
-		if (statf.st_size > d[0] && (fil->d_name[0] != '.' || (o && o[A])))
+		if (statf.st_size > d[0] && (name[0] != '.' || (o && o[A])))
 			d[SIZ_TMP] = statf.st_size;
 		d[UID_LEN] = COMPARE(d[UID_LEN], (long int)ft_strlen(uid->pw_name));
 		d[GID_LEN] = COMPARE(d[GID_LEN], (long int)ft_strlen(gid->gr_name));
@@ -202,7 +202,7 @@ long int		*len_infos(char *nam,
 		mknam(nam, fil[i]->d_name), &statf) == 0 && (d[3] = 1))
 	{
 		free(nam_made);
-		compare_stock(d, statf, fil[i], o);
+		compare_stock(d, statf, fil[i]->d_name, o);
 	}
 	i = 1;
 	while (d[SIZ_TMP] % i != d[SIZ_TMP] && ++d[SIZ_LEN])
@@ -231,8 +231,8 @@ int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 			str_stat[1] = mknam(nam, file[order[i]]->d_name), &statf))
 		{
 			free(str_stat[1]);
-			ft_putstr_cat((getstat(statf, str_stat[0], infos_len)), NULL
-					, file[order[i]]->d_name, 1);
+			ft_putstr_cat((getstat(statf, str_stat[0], infos_len))
+				, file[order[i]]->d_name, NULL, 1);
 		}
 	ft_putchar('\n');
 	free(infos_len);

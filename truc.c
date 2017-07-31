@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <sys/stat.h>
+#include <pwd.h>
 #include <time.h>
 
 int		main(int ac, char **av)
 {
-	struct stat statf;
-	lstat(av[1], &statf);
+	int i = 0;
 
-	printf("%lld\n", statf.st_mtim);
+	printf("%d", ac);
 }

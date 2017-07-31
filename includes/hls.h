@@ -90,5 +90,7 @@ typedef long int lsi;
 int					*sort(char *opt, struct dirent **inp, int qty);
 char				*get_opt(int ac, char **av);
 void				list_dir(char *a, char *b, DIR *inp, int is_inp_not_null);
+int					compare_stock(lsi *d, stats statf, char *name, char *o);
+char				*getstat(struct stat statf, char *str, long int *lengths);
 
 #endif
