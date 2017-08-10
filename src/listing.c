@@ -52,12 +52,7 @@ int				*printd(struct dirent **file, int qty, char *opt, char *nam)
 	i = -1;
 	while (++i < qty)
 		if (file[order[i]]->d_name[0] != '.' || (opt && opt[A]))
-		{
-			ft_putstr(file[order[i]]->d_name);
-			ft_putchar('\t');
-			if (i && !(i % 5) && i + 1 < qty)
-				ft_putchar('\n');
-		}
+			ft_putstr_cat(file[order[i]]->d_name, NULL, NULL, 1);
 	ft_putchar('\n');
 	return (order);
 }
