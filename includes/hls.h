@@ -35,7 +35,7 @@
 # define BLK_CNT 6
 
 # define MAX_LENS 8
-# define STRSIZE 766
+# define STRSIZE 1080
 
 /*
 ** /!\SYSTEM DEPENDANT /!\
@@ -87,10 +87,11 @@ typedef struct dirent dirs;
 typedef struct stat stats;
 typedef long int lsi;
 
-int					*sort(char *opt, struct dirent **inp, int qty);
+int					*sort(char *opt, struct dirent **inp, int qty, char *nam);
 char				*get_opt(int ac, char **av);
 void				list_dir(char *a, char *b, DIR *inp, int is_inp_not_null);
 int					compare_stock(lsi *d, stats statf, char *name, char *o);
 char				*getstat(struct stat statf, char *str, long int *lengths);
+char				*mknam(char *s1, char *s2);
 
 #endif

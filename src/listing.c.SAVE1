@@ -43,12 +43,12 @@ char			*mknam(char *s1, char *s2)
 	return (outp);
 }
 
-int				*printd(struct dirent **file, int qty, char *opt, char *nam)
+int				*printd(struct dirent **file, int qty, char *opt)
 {
 	int			i;
 	int			*order;
 
-	order = sort(opt, file, qty, nam);
+	order = sort(opt, file, qty);
 	i = -1;
 	while (++i < qty)
 		if (file[order[i]]->d_name[0] != '.' || (opt && opt[A]))
@@ -62,54 +62,33 @@ int				*printd(struct dirent **file, int qty, char *opt, char *nam)
 	return (order);
 }
 
-void			mode_user(int mode, char *s)
-{
-	(mode&S_IRUSR) ? (lsi)ft_strncat(s, "r", 1) : (lsi)ft_strncat(s, "-", 1);
-	(mode&S_IWUSR) ? (lsi)ft_strncat(s, "w", 1) : (lsi)ft_strncat(s, "-", 1);
-	if (mode&S_IXUSR && !(mode&S_ISUID))
-		ft_strncat(s, "x", 1);
-	else if (mode&S_IXUSR && mode&S_ISUID)
-		ft_strncat(s, "s", 1);
-	else if (!(mode&S_IXUSR) && mode&S_ISUID)
-		ft_strncat(s, "S", 1);
-	else
-		ft_strncat(s, "-", 1);
-}
-
-void			mode_grup(int mode, char *s)
-{
-	(mode&S_IRGRP) ? (lsi)ft_strncat(s, "r", 1) : (lsi)ft_strncat(s, "-", 1);
-	(mode&S_IWGRP) ? (lsi)ft_strncat(s, "w", 1) : (lsi)ft_strncat(s, "-", 1);
-	if (mode&S_IXGRP && !(mode&S_ISGID))
-		ft_strncat(s, "x", 1);
-	else if (mode&S_IXGRP && mode&S_ISGID)
-		ft_strncat(s, "s", 1);
-	else if (!(mode&S_IXGRP) && mode&S_ISGID)
-		ft_strncat(s, "S", 1);
-	else
-		ft_strncat(s, "-", 1);
-}
-
-void			mode_othr(int mode, char *s)
-{
-	(mode&S_IROTH) ? (lsi)ft_strncat(s, "r", 1) : (lsi)ft_strncat(s, "-", 1);
-	(mode&S_IWOTH) ? (lsi)ft_strncat(s, "w", 1) : (lsi)ft_strncat(s, "-", 1);
-	if (mode&S_IXOTH && !(mode&S_ISVTX))
-		ft_strncat(s, "x", 1);
-	else if (mode&S_IXOTH && mode&S_ISVTX)
-		ft_strncat(s, "t", 1);
-	else if (!(mode&S_IXOTH) && mode&S_ISVTX)
-		ft_strncat(s, "T", 1);
-	else
-		ft_strncat(s, "-", 1);
-}
-
 char			*translate_mod(int st_mode, char *str, char a)
 {
+	int			mod[3];
+	int			i;
+
+	ft_bzero(mod, sizeof(int) * (i = 3));
 	str[0] = a;
-	mode_user(st_mode, str);
-	mode_grup(st_mode, str);
-	mode_othr(st_mode, str);
+	mod[0] = st_mode % 8;
+	mod[1] = ((st_mode - mod[0]) % 64) / 8;
+	mod[2] = (st_mode - mod[0] - mod[1] * 8) / 64;
+	while (--i >= 0)
+		if (mod[i] == 1)
+			ft_strncat(str, "--x", 3);
+		else if (mod[i] == 2)
+			ft_strncat(str, "-w-", 3);
+		else if (mod[i] == 3)
+			ft_strncat(str, "-wx", 3);
+		else if (mod[i] == 4)
+			ft_strncat(str, "r--", 3);
+		else if (mod[i] == 5)
+			ft_strncat(str, "r-x", 3);
+		else if (mod[i] == 6)
+			ft_strncat(str, "rw-", 3);
+		else if (mod[i] == 7)
+			ft_strncat(str, "rwx", 3);
+		else if (mod[i] == 0)
+			ft_strncat(str, "---", 3);
 	return (NULL);
 }
 
@@ -265,7 +244,7 @@ int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 	if (!(str_stat[0] = malloc(STRSIZE * sizeof(char))))
 		return (NULL);
 	i = -1;
-	order = sort(opt, file, qty, nam);
+	order = sort(opt, file, qty);
 	infos_len = len_infos(nam, file, qty, opt);
 	while (++i < qty){
 		if ((file[order[i]]->d_name[0] != '.' || (opt && opt[A])) && !lstat(
@@ -294,7 +273,7 @@ void			list_tool(char *opt, struct dirent **content,
 	if ((i = -1) && opt && opt[L])
 		order = printd_l(nam, content, qty, opt);
 	else
-		order = printd(content, qty, opt, nam);
+		order = printd(content, qty, opt);
 	if (!order)
 		return ;
 	while (++i < qty && (opt && opt[REC]))

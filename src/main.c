@@ -46,13 +46,20 @@ int					chk_d(char **tab, int i, char *opt, int *type)
 	if (!(dir_id = opendir(tab[i])))
 	{
 		if (lstat(tab[i], &statf) && ++type[3])
+		{
 			(!type[0]) ? ft_putstr_cat(NEXIST_1, tab[i], NEXIST_2, 1) : 1;
+		}
+			
 		else if (statf.st_mode >= S_IFREG &&
 			statf.st_mode < S_IFLNK && ++type[3])
+		{
 				(type[0] && type[0] != 2 && (type[1] = 2)) ?
 					print_solo_file(tab, i, opt, statf) : 1;
+		}
 		else if (!type[0] && ++type[3])
+		{
 			ft_putstr_cat(NPERMS_1, tab[i], NPERMS_2, 1);
+		}
 		return (0);
 	}
 	else
@@ -66,11 +73,9 @@ int					main(int ac, char **av)
 	char			*opt;
 	int				i;
 	int				wit[5];
-	int				is_inp_a_file;
 
 	ft_bzero(wit, 4 * sizeof(int));
 	opt = NULL;
-	is_inp_a_file = 0;
 	opt = get_opt(ac, av);
 	while (!(i = 0) && wit[0] <= 1)
 	{
@@ -80,6 +85,7 @@ int					main(int ac, char **av)
 		(wit[0]++ && wit[3]) ? ft_putstr("\n\n") : 1;
 	}
 	wit[4] = (wit[3] && wit[2]) ? 2 : 0;
+	(!wit[3] && !wit[2]) ? list_dir(opt, ".", NULL, 0) : 1; 
 	wit[2] = (wit[2] / 2 > 1) ? 2 : 0;
 	while (++i < ac)
 	{
