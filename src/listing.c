@@ -192,13 +192,17 @@ int				compare_stock(lsi *d, stats statf, char *name, char *o)
 
 	uid = getpwuid(statf.st_uid);
 	gid = getgrgid(statf.st_gid);
-	if (d && uid && gid)
+	if (d)
 	{
 		if (statf.st_size > d[0] && (name[0] != '.' || (o && o[A])))
 			d[SIZ_TMP] = statf.st_size;
-		d[UID_LEN] = COMPARE(d[UID_LEN], (long int)ft_strlen(uid->pw_name));
-		d[GID_LEN] = COMPARE(d[GID_LEN], (long int)ft_strlen(gid->gr_name));
 		d[LNK_TMP] = COMPARE((size_t)d[LNK_TMP], statf.st_nlink);
+		d[BLK_CNT] += (name[0] != '.' || (o && o[A])) ? statf.st_blocks / 2 : 0;
+		if (uid && gid)
+		{
+			d[UID_LEN] = COMPARE(d[UID_LEN], (long int)ft_strlen(uid->pw_name));
+			d[GID_LEN] = COMPARE(d[GID_LEN], (long int)ft_strlen(gid->gr_name));
+		}
 	}
 	return (0);
 }
@@ -212,7 +216,7 @@ long int		*len_infos(char *nam,
 	int					i;
 
 	if (!(d = malloc(sizeof(long int) *
-		(MAX_LENS + 1 + (i = 0)))))
+		(MAX_LENS + 2 + (i = -1)))))
 		return (NULL);
 	ft_bzero(d, sizeof(long int) * MAX_LENS);
 	while (++i < qty && lstat(nam_made =
@@ -249,6 +253,14 @@ char			*link_symlink(char *path_nam)
 	return (outp);
 }
 
+void			put_total(long int blk_siz)
+{
+	char		*blk;
+
+	ft_putstr_cat("total ", blk = ft_litoa(blk_siz), NULL, 1);
+	free(blk);
+}
+
 int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 {
 	int				i;
@@ -262,7 +274,8 @@ int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 	i = -1;
 	order = sort(opt, file, qty, nam);
 	infos_len = len_infos(nam, file, qty, opt);
-	while (++i < qty){
+	put_total(infos_len[BLK_CNT]);
+	while (++i < qty)
 		if ((file[order[i]]->d_name[0] != '.' || (opt && opt[A])) && !lstat(
 			str_stat[1] = mknam(nam, file[order[i]]->d_name), &statf))
 		{
@@ -270,10 +283,8 @@ int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 				, file[order[i]]->d_name
 					, str_stat[2] = link_symlink(str_stat[1]), 1);
 			free(str_stat[1]);
-			(str_stat[2] != NULL) ? free(str_stat[2]) : (void)0;
-		}}
-	ft_putchar('\n');
-	free(infos_len);
+			(str_stat[2] != NULL) ? free(str_stat[2]) : 1;
+		}
 	free(str_stat[0]);
 	return (order);
 }

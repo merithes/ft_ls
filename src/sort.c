@@ -33,8 +33,9 @@ int					*sort_time(char *opt, dirs **tab, int qty, char *nam)
 		i[1] = -1;
 		i[3] = 0;
 		while (++i[1] < qty)
-			i[3] += (times[i[0]] * i[2] < times[i[1]] * i[2] ||
-				(times[i[0]] == times[i[1]] && i[0] * i[2] > i[1] * i[2])) 1 : 0;
+			if (times[i[0]] * i[2] < times[i[1]] * i[2] ||
+				(times[i[0]] == times[i[1]] && i[0] * i[2] > i[1] * i[2]))
+				i[3]++;
 		outp[i[3]] = i[0];
 	}
 	return (outp);
