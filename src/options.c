@@ -6,12 +6,11 @@ char			*opt_filter(char *av, char *inp)
 	char		*outp;
 	int			i;
 
-	i = 0;
-	if (!(outp = inp))
-		if (!(outp = ft_strnew(6)))
+	if (!(outp = inp) && !(i = 0))
+		if (!(outp = ft_strnew(MAX_OPT)))
 			return (NULL);
 	while ((a = av[++i]) != 0)
-		if (a != 'l' && a != 'R' && a != 'a' && a != 'r' && a != 't')
+		if (a != 'l' && a != 'R' && a != 'a' && a != 'r' && a != 't' && a != 'c')
 		{
 			free(outp);
 			ft_putstr("ft_ls: invalid option -- '");
@@ -26,6 +25,7 @@ char			*opt_filter(char *av, char *inp)
 			outp[REC] = (a == 'R') ? outp[REC] + 1 : outp[REC];
 			outp[REV] = (a == 'r') ? outp[REV] + 1 : outp[REV];
 			outp[T] = (a == 't') ? outp[T] + 1 : outp[T] ;
+			outp[C] = (a == 'c') ? outp[C] + 1 : outp[C] ;
 		}
 	return (outp);
 }

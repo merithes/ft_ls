@@ -129,11 +129,11 @@ void			append_time(char *str, stats statf)
 	char time_alpha[23];
 
 	ft_bzero(time_alpha, sizeof(char) * 23);
-	if (statf.st_mtime + SIX_MONTH > time(0))
-		ft_strncat(str, ctime(&statf.st_mtime) + 4, 12);
+	if (statf.st_mtim.tv_sec + SIX_MONTH > time(0))
+		ft_strncat(str, ctime(&statf.st_mtim.tv_sec) + 4, 12);
 	else
 	{
-		strcpy(time_alpha, ctime(&statf.st_mtime) + 4);
+		strcpy(time_alpha, ctime(&statf.st_mtim.tv_sec) + 4);
 		time_alpha[7] = ' ';
 		time_alpha[8] = time_alpha[16];
 		time_alpha[9] = time_alpha[17];

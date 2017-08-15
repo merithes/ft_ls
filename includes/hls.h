@@ -25,6 +25,8 @@
 # define REV 2
 # define REC 3
 # define T 4
+# define C 5
+# define MAX_OPT 7
 
 # define UID_LEN 1
 # define GID_LEN 2

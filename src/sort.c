@@ -1,6 +1,6 @@
 #include "hls.h"
 
-long int			get_mtime(char *parent, char *file)
+long int			get_filtime(char *opt, char *parent, char *file)
 {
 	char			outp[3000];
 	stats			statf;
@@ -12,7 +12,10 @@ long int			get_mtime(char *parent, char *file)
 	ft_strcat(outp, file);
 	if (lstat(outp, &statf))
 		return (0);
-	return (statf.st_mtime);
+	//printf("%s\t%s\t%s\t\n", file, ctime(&statf.st_ctim.tv_sec), ctime(&statf.st_mtim.tv_sec));
+	if (opt && opt[C])
+		return (statf.st_ctim.tv_sec);
+	return (statf.st_mtim.tv_sec);
 }
 
 int					*sort_time(char *opt, dirs **tab, int qty, char *nam)
@@ -26,14 +29,14 @@ int					*sort_time(char *opt, dirs **tab, int qty, char *nam)
 	i[0] = -1;
 	i[2] = (opt && opt[REV]) ? -1 : 1;
 	while (++i[0] < qty)
-		times[i[0]] = get_mtime(nam, tab[i[0]]->d_name);
+		times[i[0]] = get_filtime(opt, nam, tab[i[0]]->d_name);
 	i[0] = -1;
 	while (++i[0] < qty)
 	{
 		i[1] = -1;
 		i[3] = 0;
 		while (++i[1] < qty)
-			if (times[i[0]] * i[2] < times[i[1]] * i[2] ||
+			if (times[i[0]] * i[2] > times[i[1]] * i[2] ||
 				(times[i[0]] == times[i[1]] && i[0] * i[2] > i[1] * i[2]))
 				i[3]++;
 		outp[i[3]] = i[0];
@@ -49,7 +52,7 @@ int					*sort(char *opt, struct dirent **tab, int qty, char *nam)
 	int				cnt;
 
 	i = -1;
-	if (opt && opt[T])
+	if ((opt && opt[T]) || (opt && opt[C]))
 		return (sort_time(opt, tab, qty, nam));
 	if (!(outp = malloc(sizeof(int) * (qty + 1))))
 		return (NULL);

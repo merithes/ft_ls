@@ -26,7 +26,7 @@ void				lengths_solo(long int *lengths, char **tabs, char *options)
 
 void				print_solo_file(char **tab, int i, char *opt, stats statf)
 {
-	char			stat_tab[766];
+	char			stat_tab[STRSIZE];
 	long int		infos_len[MAX_LENS];
 
 	if (!opt || (opt && !opt[L]))
@@ -34,6 +34,7 @@ void				print_solo_file(char **tab, int i, char *opt, stats statf)
 	else
 	{
 		lengths_solo(infos_len, tab, opt);
+		printf("%ld\t%ld\t%ld\t%ld\t%ld\n", infos_len[UID_LEN], infos_len[GID_LEN], infos_len[SIZ_LEN], infos_len[LNK_LEN], infos_len[BLK_CNT]);
 		ft_putstr_cat(getstat(statf, stat_tab, infos_len), tab[i], NULL, 1);
 	}
 }
@@ -49,12 +50,11 @@ int					chk_d(char **tab, int i, char *opt, int *type)
 		{
 			(!type[0]) ? ft_putstr_cat(NEXIST_1, tab[i], NEXIST_2, 1) : 1;
 		}
-			
 		else if (statf.st_mode >= S_IFREG &&
 			statf.st_mode < S_IFLNK && ++type[3])
 		{
-				(type[0] && type[0] != 2 && (type[1] = 2)) ?
-					print_solo_file(tab, i, opt, statf) : 1;
+			if (type[0] && type[0] != 2 && (type[1] = 2))
+				print_solo_file(tab, i, opt, statf);
 		}
 		else if (!type[0] && ++type[3])
 		{
@@ -74,7 +74,7 @@ int					main(int ac, char **av)
 	int				i;
 	int				wit[5];
 
-	ft_bzero(wit, 4 * sizeof(int));
+	ft_bzero(wit, 5 * sizeof(int));
 	opt = NULL;
 	opt = get_opt(ac, av);
 	while (!(i = 0) && wit[0] <= 1)
@@ -82,7 +82,7 @@ int					main(int ac, char **av)
 		while (av[++i])
 			if (av[i][0] != '-')
 				wit[2] += (chk_d(av, i, opt, wit) != 0) ? 1 : 0;
-		(wit[0]++ && wit[3]) ? ft_putstr("\n\n") : 1;
+		(wit[0]++ && wit[3]) ? ft_putstr("\n") : 1;
 	}
 	wit[4] = (wit[3] && wit[2]) ? 2 : 0;
 	(!wit[3] && !wit[2]) ? list_dir(opt, ".", NULL, 0) : 1; 
