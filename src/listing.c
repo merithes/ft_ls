@@ -108,7 +108,7 @@ char			*translate_mod(int st_mode, char *str, char a)
 	return (NULL);
 }
 
-void			append_uid_gid(char *str, int uid, int gid, long int *lns)
+void				append_uid_gid(char *str, int uid, int gid, long int *lns)
 {
 	struct group	*g_info;
 	struct passwd	*u_info;
@@ -124,16 +124,18 @@ void			append_uid_gid(char *str, int uid, int gid, long int *lns)
 		ft_strncat(str, " ", 1);
 }
 
-void			append_time(char *str, stats statf)
+void				append_time(char *str, stats statf, char *opt)
 {
-	char time_alpha[23];
+	char			time_alpha[23];
+	time_t			tim;
 
+	tim = (opt && opt[C]) ? statf.st_ctim.tv_sec : statf.st_mtim.tv_sec;
 	ft_bzero(time_alpha, sizeof(char) * 23);
-	if (statf.st_mtim.tv_sec + SIX_MONTH > time(0))
-		ft_strncat(str, ctime(&statf.st_mtim.tv_sec) + 4, 12);
+	if (tim + SIX_MONTH > time(0))
+		ft_strncat(str, ctime(&tim) + 4, 12);
 	else
 	{
-		strcpy(time_alpha, ctime(&statf.st_mtim.tv_sec) + 4);
+		strcpy(time_alpha, ctime(&tim) + 4);
 		time_alpha[7] = ' ';
 		time_alpha[8] = time_alpha[16];
 		time_alpha[9] = time_alpha[17];
@@ -159,7 +161,7 @@ void			append_size(char *str, stats statf, long int *lengths)
 		ft_strncat(str, " ", 1);
 }
 
-char			*getstat(struct stat statf, char *str, long int *lengths)
+char			*getstat(struct stat statf, char *str, long int *lengths, char *opt)
 {
 	int			i;
 	char		*tmp;
@@ -181,7 +183,7 @@ char			*getstat(struct stat statf, char *str, long int *lengths)
 		ft_strncat(str, " ", 1);
 	append_uid_gid(str, statf.st_uid, statf.st_gid, lengths);
 	append_size(str, statf, lengths);
-	append_time(str, statf);
+	append_time(str, statf, opt);
 	return (str);
 }
 
@@ -279,7 +281,7 @@ int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 		if ((file[order[i]]->d_name[0] != '.' || (opt && opt[A])) && !lstat(
 			str_stat[1] = mknam(nam, file[order[i]]->d_name), &statf))
 		{
-			ft_putstr_cat((getstat(statf, str_stat[0], infos_len))
+			ft_putstr_cat((getstat(statf, str_stat[0], infos_len, opt))
 				, file[order[i]]->d_name
 					, str_stat[2] = link_symlink(str_stat[1]), 1);
 			free(str_stat[1]);

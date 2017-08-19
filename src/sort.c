@@ -52,7 +52,7 @@ int					*sort(char *opt, struct dirent **tab, int qty, char *nam)
 	int				cnt;
 
 	i = -1;
-	if ((opt && opt[T]) || (opt && opt[C]))
+	if ((opt && opt[T]) || (opt && opt[C] && !opt[L]))
 		return (sort_time(opt, tab, qty, nam));
 	if (!(outp = malloc(sizeof(int) * (qty + 1))))
 		return (NULL);

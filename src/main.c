@@ -22,6 +22,12 @@ void				lengths_solo(long int *lengths, char **tabs, char *options)
 	while (tabs[++i])
 		if (tabs[i][0] != '-' && !lstat(tabs[i], &statf))
 			compare_stock(lengths, statf, tabs[i], options);
+	i = 1;
+	while (lengths[SIZ_TMP] % i != lengths[SIZ_TMP] && ++lengths[SIZ_LEN])
+		i *= 10;
+	i = 1;
+	while (lengths[LNK_TMP] % i != lengths[LNK_TMP] && ++lengths[LNK_LEN])
+		i *= 10;
 }
 
 void				print_solo_file(char **tab, int i, char *opt, stats statf)
@@ -34,8 +40,7 @@ void				print_solo_file(char **tab, int i, char *opt, stats statf)
 	else
 	{
 		lengths_solo(infos_len, tab, opt);
-		printf("%ld\t%ld\t%ld\t%ld\t%ld\n", infos_len[UID_LEN], infos_len[GID_LEN], infos_len[SIZ_LEN], infos_len[LNK_LEN], infos_len[BLK_CNT]);
-		ft_putstr_cat(getstat(statf, stat_tab, infos_len), tab[i], NULL, 1);
+		ft_putstr_cat(getstat(statf, stat_tab, infos_len, opt), tab[i], NULL, 1);
 	}
 }
 
