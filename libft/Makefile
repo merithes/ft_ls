@@ -37,12 +37,14 @@ HEADERS = .
 all: $(NAME)
 
 %.o: %.c libft.h Makefile
-	@printf "libft:compiling $< \r"
+	@printf "libft:compiling $<                 \r"
 	@gcc -Wall -Werror -Wextra -c $< -o $@ -I .
 
 $(NAME): $(SRCO)
 	@ar rc $(NAME) $(SRCO)
 	@ranlib $(NAME)
+	@printf "                                      \r"
+	@printf "libft compilation:\tdone\n"
 
 clean:
 	@rm -f $(SRCO)

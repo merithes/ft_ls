@@ -29,10 +29,12 @@ OBJPATH		= obj
 all: $(NAME)
 
 $(OBJPATH)/%.o: $(SRCPATH)/%.c
-	@printf "Compiling $<\r"
+	@printf "Compiling $<                    \r"
 	@$(COMP) $(FLAGS) -c $< -o $@ $(INC)
 
 $(NAME): $(DIR_OBJ)
+	@printf "                                                        \r"
+	@printf "main compilation:\tdone\n"
 	@make -C libft
 	@$(COMP) $(DIR_OBJ) -o $(NAME) $(INCMAC) $(LIBFT) $(FLAGS)
 
