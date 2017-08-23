@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sort.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/08/23 21:38:06 by vboivin           #+#    #+#             */
+/*   Updated: 2017/08/23 21:39:45 by vboivin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "hls.h"
 
 long int			get_filtime(char *opt, char *parent, char *file)
@@ -12,7 +24,6 @@ long int			get_filtime(char *opt, char *parent, char *file)
 	ft_strcat(outp, file);
 	if (lstat(outp, &statf))
 		return (0);
-	//printf("%s\t%s\t%s\t\n", file, ctime(&statf.st_ctime), ctime(&statf.st_mtime));
 	if (opt && opt[C])
 		return (statf.st_ctime);
 	else if (opt && opt[U])
@@ -46,7 +57,7 @@ int					*sort_time(char *opt, dirs **tab, int qty, char *nam)
 	return (outp);
 }
 
-int					*not_sorted(int qty)
+static int			*not_sorted(int qty)
 {
 	int				*outp;
 	int				i;

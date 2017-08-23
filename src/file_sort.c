@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   file_sort.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/08/23 21:37:55 by vboivin           #+#    #+#             */
+/*   Updated: 2017/08/23 21:39:36 by vboivin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "hls.h"
 
 long int			get_filtime_solo(char *opt, char *file)
@@ -39,31 +51,44 @@ int					*sort_time_solo(char *opt, char **tab, int qty)
 	return (outp);
 }
 
-int					*sort_solo(char *opt, char **tab, int qty)
+static int			*not_sorted(int qty)
 {
 	int				*outp;
 	int				i;
-	int				ic;
-	int				cnt;
 
+	if (!(outp = malloc((qty + 1) * sizeof(int))))
+		return (NULL);
 	i = -1;
+	while (++i < qty)
+		outp[i] = i;
+	return (outp);
+}
+
+int					*sort_solo(char *opt, char **tab, int qty)
+{
+	int				*outp;
+	int				i[3];
+
+	i[0] = -1;
+	if (opt && opt[F])
+			return (not_sorted(qty));
 	if ((opt && opt[T]) || (opt && (opt[C] || opt[U]) && !opt[L]))
 		return (sort_time_solo(opt, tab, qty));
 	if (!(outp = malloc(sizeof(int) * (qty + 1))))
 		return (NULL);
 	ft_bzero(outp, sizeof(int) * (qty + 1));
-	while(++i < qty && !(ic = 0))
+	while(++i[0] < qty && !(i[1] = 0))
 	{
-		cnt = 0;
-		while (ic < qty)
+		i[2] = 0;
+		while (i[1] < qty)
 		{
 			if (opt && opt[REV])
-				cnt += (ft_strcmp(tab[i], tab[ic]) < 0) ? 1 : 0;
+				i[2] += (ft_strcmp(tab[i[0]], tab[i[1]]) < 0) ? 1 : 0;
 			else
-				cnt += (ft_strcmp(tab[i], tab[ic]) > 0) ? 1 : 0;
-			ic++;
+				i[2] += (ft_strcmp(tab[i[0]], tab[i[1]]) > 0) ? 1 : 0;
+			i[1]++;
 		}
-		outp[cnt] = i;
+		outp[i[2]] = i[0];
 	}
 	return (outp);
 }
