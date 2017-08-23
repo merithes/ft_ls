@@ -18,7 +18,7 @@ FLAGS		= -Wall -Werror -Wextra
 COMP		= gcc
 LIBFT		= -Llibft -lft
 
-SRCS 		= main.c sort.c options.c listing.c
+SRCS 		= main.c sort.c options.c listing.c file_sort.c
 DIR_SRC		= $(addprefix $(SRCPATH)/, $(SRCS))
 SRCPATH		= src
 

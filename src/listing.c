@@ -47,12 +47,24 @@ int				*printd(struct dirent **file, int qty, char *opt, char *nam)
 {
 	int			i;
 	int			*order;
+	char		*tmp;
+	stats		statf;
 
 	order = sort(opt, file, qty, nam);
+	tmp = NULL;
 	i = -1;
 	while (++i < qty)
-		if (file[order[i]]->d_name[0] != '.' || (opt && opt[A]))
-			ft_putstr_cat(file[order[i]]->d_name, NULL, NULL, 1);
+		if (file[order[i]]->d_name[0] != '.' || (opt && (opt[A] || opt[F])))
+		{
+			if (opt && opt[S] &&
+				!lstat((tmp = mknam(nam, file[order[i]]->d_name)), &statf))
+				{
+					ft_putnbr(statf.st_blocks/2);
+					ft_putchar('\t');
+					free(tmp);
+				}
+			ft_putstr_cat(NULL, file[order[i]]->d_name, NULL, 1);
+		}
 	ft_putchar('\n');
 	return (order);
 }
@@ -101,27 +113,44 @@ void			mode_othr(int mode, char *s)
 
 char			*translate_mod(int st_mode, char *str, char a)
 {
-	str[0] = a;
+	ft_strncat(str, &a, 1);
 	mode_user(st_mode, str);
 	mode_grup(st_mode, str);
 	mode_othr(st_mode, str);
 	return (NULL);
 }
 
-void				append_uid_gid(char *str, int uid, int gid, long int *lns)
+void				append_uid_gid(char *str, stats statf, char *opt, long int *lns)
 {
 	struct group	*g_info;
 	struct passwd	*u_info;
 	int				i;
 
-	g_info = getgrgid(gid);
-	u_info = getpwuid(uid);
-	ft_strncat(str, u_info->pw_name, i = ft_strlen(u_info->pw_name));
-	while (i++ < lns[UID_LEN] + 1)
-		ft_strncat(str, " ", 1);
-	ft_strncat(str, g_info->gr_name, i = ft_strlen(g_info->gr_name));
-	while (i++ < lns[GID_LEN] + 1)
-		ft_strncat(str, " ", 1);
+	if (!opt[G])
+	{
+		u_info = getpwuid(statf.st_uid);
+		ft_strncat(str, u_info->pw_name, i = ft_strlen(u_info->pw_name));
+		while (i++ < lns[UID_LEN] + 1)
+			ft_strncat(str, " ", 1);
+	}
+	if (!opt[O])
+	{
+		g_info = getgrgid(statf.st_gid);
+		ft_strncat(str, g_info->gr_name, i = ft_strlen(g_info->gr_name));
+		while (i++ < lns[GID_LEN] + 1)
+			ft_strncat(str, " ", 1);
+	}
+}
+
+lsi					get_time_append(stats statf, char *opt)
+{
+	if (!opt)
+		return (statf.st_mtim.tv_sec);
+	if (opt[C])
+		return (statf.st_ctim.tv_sec);
+	else if (opt[U])
+		return (statf.st_atim.tv_sec);
+	return (statf.st_mtim.tv_sec);
 }
 
 void				append_time(char *str, stats statf, char *opt)
@@ -129,9 +158,9 @@ void				append_time(char *str, stats statf, char *opt)
 	char			time_alpha[23];
 	time_t			tim;
 
-	tim = (opt && opt[C]) ? statf.st_ctim.tv_sec : statf.st_mtim.tv_sec;
+	tim = get_time_append(statf, opt);
 	ft_bzero(time_alpha, sizeof(char) * 23);
-	if (tim + SIX_MONTH > time(0))
+	if (tim + SIX_MONTH > time(0) && tim < time(0) + 3600)
 		ft_strncat(str, ctime(&tim) + 4, 12);
 	else
 	{
@@ -161,12 +190,27 @@ void			append_size(char *str, stats statf, long int *lengths)
 		ft_strncat(str, " ", 1);
 }
 
+void			append_blk(stats statf, char *str, lsi *lengths)
+{
+	char		*tmp;
+	int			i;
+	int			slen;
+
+	i = -1;
+	ft_strcat(str, tmp = ft_itoa(statf.st_blocks/2));
+	slen = ft_strlen(tmp);
+	(tmp) ? free(tmp) : 1;
+	while (++i + slen <= lengths[BLK_LEN])
+		ft_strncat(str, " ", 1);
+}
+
 char			*getstat(struct stat statf, char *str, long int *lengths, char *opt)
 {
 	int			i;
 	char		*tmp;
 
 	ft_bzero(str, STRSIZE);
+	(opt && opt[S]) ? append_blk(statf, str, lengths) : 1;
 	i = 0;
 	if (statf.st_mode >= S_IFLNK && 1 + (statf.st_mode -= S_IFLNK))
 		translate_mod(statf.st_mode, str, 'l');
@@ -181,7 +225,7 @@ char			*getstat(struct stat statf, char *str, long int *lengths, char *opt)
 	free(tmp);
 	while (i++ < lengths[LNK_LEN] + 1)
 		ft_strncat(str, " ", 1);
-	append_uid_gid(str, statf.st_uid, statf.st_gid, lengths);
+	append_uid_gid(str, statf, opt, lengths);
 	append_size(str, statf, lengths);
 	append_time(str, statf, opt);
 	return (str);
@@ -199,6 +243,7 @@ int				compare_stock(lsi *d, stats statf, char *name, char *o)
 		if (statf.st_size > d[0] && (name[0] != '.' || (o && o[A])))
 			d[SIZ_TMP] = statf.st_size;
 		d[LNK_TMP] = COMPARE((size_t)d[LNK_TMP], statf.st_nlink);
+		d[BLK_TMP] = COMPARE(d[BLK_TMP], statf.st_blocks);
 		d[BLK_CNT] += (name[0] != '.' || (o && o[A])) ? statf.st_blocks / 2 : 0;
 		if (uid && gid)
 		{
@@ -232,6 +277,9 @@ long int		*len_infos(char *nam,
 		i *= 10;
 	i = 1;
 	while (d[LNK_TMP] % i != d[LNK_TMP] && ++d[LNK_LEN])
+		i *= 10;
+	i = 1;
+	while (d[BLK_TMP] % i != d[BLK_TMP] && ++d[BLK_LEN])
 		i *= 10;
 	return (d);
 }
@@ -278,8 +326,8 @@ int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 	infos_len = len_infos(nam, file, qty, opt);
 	put_total(infos_len[BLK_CNT]);
 	while (++i < qty)
-		if ((file[order[i]]->d_name[0] != '.' || (opt && opt[A])) && !lstat(
-			str_stat[1] = mknam(nam, file[order[i]]->d_name), &statf))
+		if ((file[order[i]]->d_name[0] != '.' || (opt && (opt[A] || opt[F])))
+			&& !lstat(str_stat[1] = mknam(nam, file[order[i]]->d_name), &statf))
 		{
 			ft_putstr_cat((getstat(statf, str_stat[0], infos_len, opt))
 				, file[order[i]]->d_name
@@ -310,7 +358,7 @@ void			list_tool(char *opt, struct dirent **content,
 				(ft_strcmp(content[order[i]]->d_name, ".") != 0 &&
 					ft_strcmp(content[order[i]]->d_name, "..") != 0)) &&
 						((content[order[i]]->d_name[0] != '.') ||
-							(opt && opt[A]))))
+							(opt && (opt[A] || opt[F])))))
 		{
 			if ((direc = opendir(tmp = mknam(nam, content[order[i]]->d_name))))
 				list_dir(opt, tmp, direc, 1);
@@ -373,5 +421,6 @@ void			list_dir(char *opt, char *av, DIR *inp, int context)
 	while (readtab[i++])
 		free(readtab[i]);
 	free(readtab);
+	(opt && opt[L]) ? ft_putchar('\n') : 1;
 	closedir(dir_id);
 }

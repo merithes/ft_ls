@@ -30,74 +30,98 @@ void				lengths_solo(long int *lengths, char **tabs, char *options)
 		i *= 10;
 }
 
-void				print_solo_file(char **tab, int i, char *opt, stats statf)
+void				print_solo_file(char *opt, char *path, char *stat_tab,
+						long int *infos_len)
 {
-	char			stat_tab[STRSIZE];
-	long int		infos_len[MAX_LENS];
+	stats			statf;
 
+	if (lstat(path, &statf))
+		return ;
 	if (!opt || (opt && !opt[L]))
-		ft_putstr_cat(NULL, tab[i], "\t", 0);
+		ft_putstr_cat(NULL, path, "\n", 0);
 	else
-	{
-		lengths_solo(infos_len, tab, opt);
-		ft_putstr_cat(getstat(statf, stat_tab, infos_len, opt), tab[i], NULL, 1);
-	}
+		ft_putstr_cat(getstat(statf, stat_tab, infos_len, opt), path, NULL, 1);
 }
 
-int					chk_d(char **tab, int i, char *opt, int *type)
+void				prnt_files(char **tab, char *opt, int to_line)
+{
+	int				*order;
+	char			stat_tab[STRSIZE];
+	long int		infos_len[MAX_LENS];
+	int				i[2];
+
+	ft_bzero(i, sizeof(int) * 2);
+	if (!tab)
+		return ;
+	while (tab[i[0]] != NULL)
+		i[0]++;
+	order = sort_solo(opt, tab, i[0]);
+	if (opt && opt[L])
+		lengths_solo(infos_len, tab, opt);
+	while (i[1] < i[0])
+		print_solo_file(opt, tab[order[i[1]++]], stat_tab, infos_len);
+	if (to_line)
+		ft_putchar('\n');
+}
+
+void				append_filename(char **tab, char *name)
+{
+	int				i;
+
+	i = 0;
+	while (tab[i] != NULL)
+		i++;
+	tab[i] = name;
+}
+
+int					chk_d(char **tab, int *data, char **file_list)
 {
 	stats			statf;
 	DIR				*dir_id;
 
-	if (!(dir_id = opendir(tab[i])))
+	if (!(dir_id = opendir(tab[data[5]])))
 	{
-		if (lstat(tab[i], &statf) && ++type[3])
-		{
-			(!type[0]) ? ft_putstr_cat(NEXIST_1, tab[i], NEXIST_2, 1) : 1;
-		}
+		if (lstat(tab[data[5]], &statf) && ++data[3] && ++data[6])
+			(!data[0]) ? ft_putstr_cat(NEXIST_1, tab[data[5]], NEXIST_2, 1) : 1;
 		else if (statf.st_mode >= S_IFREG &&
-			statf.st_mode < S_IFLNK && ++type[3])
+			statf.st_mode < S_IFLNK && ++data[3])
 		{
-			if (type[0] && type[0] != 2 && (type[1] = 2))
-				print_solo_file(tab, i, opt, statf);
+			if (data[0] && data[0] != 2 && (data[1] = 2))
+				append_filename(file_list, tab[data[5]]);
 		}
-		else if (!type[0] && ++type[3])
-		{
-			ft_putstr_cat(NPERMS_1, tab[i], NPERMS_2, 1);
-		}
+		else if (!data[0] && ++data[3] && ++data[6])
+			ft_putstr_cat(NPERMS_1, tab[data[5]], NPERMS_2, 1);
 		return (0);
 	}
 	else
 		closedir(dir_id);
+	data[7]++;
 	return (1);
-
 }
 
 int					main(int ac, char **av)
 {
 	char			*opt;
-	int				i;
-	int				wit[5];
+	char			*tab[ac];
+	int				wit[8];
 
-	ft_bzero(wit, 5 * sizeof(int));
-	opt = NULL;
+	ft_bzero(wit, 8 * sizeof(int));
+	ft_bzero(tab, ac * sizeof(char *));
 	opt = get_opt(ac, av);
-	while (!(i = 0) && wit[0] <= 1)
+	while (!(wit[5] = 0) && wit[0] <= 1)
 	{
-		while (av[++i])
-			if (av[i][0] != '-')
-				wit[2] += (chk_d(av, i, opt, wit) != 0) ? 1 : 0;
-		(wit[0]++ && wit[3]) ? ft_putstr("\n") : 1;
+		while (av[++wit[5]])
+			if (av[wit[5]][0] != '-')
+				wit[2] += (chk_d(av, wit, tab) != 0) ? 1 : 0;
+		(wit[0]++ && wit[6]) ? ft_putstr("\n") : 1;
 	}
+	prnt_files(tab, opt, wit[7]);
 	wit[4] = (wit[3] && wit[2]) ? 2 : 0;
 	(!wit[3] && !wit[2]) ? list_dir(opt, ".", NULL, 0) : 1; 
 	wit[2] = (wit[2] / 2 > 1) ? 2 : 0;
-	while (++i < ac)
-	{
-		if (av[i][0] != '-' && chk_d(av, i, opt, wit))
-			list_dir(opt, av[i], NULL, 0 + wit[1] + wit[2] + wit[4]);
-		(wit[2] / 2 && i + 1 < ac) ? ft_putchar('\n') : 1;
-	}
+	while (++wit[5] < ac)
+		if (av[wit[5]][0] != '-' && chk_d(av, wit, tab))
+			list_dir(opt, av[wit[5]], NULL, 0 + wit[1] + wit[2] + wit[4]);
 	opt ? free(opt) : ac++;
 	return 0;
 }

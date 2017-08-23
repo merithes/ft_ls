@@ -26,7 +26,7 @@ char	*ft_strrchr(const char *str, int chr)
 		i++;
 	}
 	if (chr == 0)
-		return ((char*)str + i);
+		return ((char *)str + i);
 	if (pos >= 0)
 		return ((char *)str + pos);
 	return (NULL);

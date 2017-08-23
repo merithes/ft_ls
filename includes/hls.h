@@ -26,7 +26,12 @@
 # define REC 3
 # define T 4
 # define C 5
-# define MAX_OPT 7
+# define S 6
+# define F 7
+# define U 8
+# define O 9
+# define G 10
+# define MAX_OPT 11
 
 # define UID_LEN 1
 # define GID_LEN 2
@@ -35,8 +40,10 @@
 # define LNK_TMP 4
 # define LNK_LEN 5
 # define BLK_CNT 6
+# define BLK_TMP 7
+# define BLK_LEN 8
 
-# define MAX_LENS 8
+# define MAX_LENS 9
 # define STRSIZE 1080
 
 /*
@@ -90,6 +97,7 @@ typedef struct stat stats;
 typedef long int lsi;
 
 int					*sort(char *opt, struct dirent **inp, int qty, char *nam);
+int					*sort_solo(char *opt, char **inp, int qty);
 char				*get_opt(int ac, char **av);
 void				list_dir(char *a, char *b, DIR *inp, int is_inp_not_null);
 int					compare_stock(lsi *d, stats statf, char *name, char *o);
