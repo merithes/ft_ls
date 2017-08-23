@@ -7,10 +7,10 @@ long int			get_filtime_solo(char *opt, char *file)
 	if (lstat(file, &statf))
 		return (0);
 	if (opt && opt[C])
-		return (statf.st_ctim.tv_sec);
+		return (statf.st_ctime);
 	if (opt && opt[U])
-		return (statf.st_atim.tv_sec);
-	return (statf.st_mtim.tv_sec);
+		return (statf.st_atime);
+	return (statf.st_mtime);
 }
 
 int					*sort_time_solo(char *opt, char **tab, int qty)
@@ -39,18 +39,6 @@ int					*sort_time_solo(char *opt, char **tab, int qty)
 	return (outp);
 }
 
-void				re_filter(char **tab)
-{
-	char			*tmp;
-	int				i;
-
-	tmp = NULL;
-	i = -1;
-	while (tab[++i])
-		if ((tmp = ft_strrchr(tab[i], '/')) != NULL)
-			tab[i] = tmp + 1;
-}
-
 int					*sort_solo(char *opt, char **tab, int qty)
 {
 	int				*outp;
@@ -63,7 +51,6 @@ int					*sort_solo(char *opt, char **tab, int qty)
 		return (sort_time_solo(opt, tab, qty));
 	if (!(outp = malloc(sizeof(int) * (qty + 1))))
 		return (NULL);
-	re_filter(tab);
 	ft_bzero(outp, sizeof(int) * (qty + 1));
 	while(++i < qty && !(ic = 0))
 	{

@@ -12,12 +12,12 @@ long int			get_filtime(char *opt, char *parent, char *file)
 	ft_strcat(outp, file);
 	if (lstat(outp, &statf))
 		return (0);
-	//printf("%s\t%s\t%s\t\n", file, ctime(&statf.st_ctim.tv_sec), ctime(&statf.st_mtim.tv_sec));
+	//printf("%s\t%s\t%s\t\n", file, ctime(&statf.st_ctime), ctime(&statf.st_mtime));
 	if (opt && opt[C])
-		return (statf.st_ctim.tv_sec);
+		return (statf.st_ctime);
 	else if (opt && opt[U])
-		return (statf.st_atim.tv_sec);
-	return (statf.st_mtim.tv_sec);
+		return (statf.st_atime);
+	return (statf.st_mtime);
 }
 
 int					*sort_time(char *opt, dirs **tab, int qty, char *nam)

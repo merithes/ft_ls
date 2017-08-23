@@ -23,7 +23,7 @@ char			*opt_filter(char *av, char *inp)
 	char		*outp;
 	int			i;
 
-	if (!(outp = inp) && !(i = 0))
+	if (!(i = 0) && !(outp = inp))
 		if (!(outp = ft_strnew(MAX_OPT)))
 			return (NULL);
 	while ((a = av[++i]) != 0)

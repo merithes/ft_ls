@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/26 18:22:20 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/02 21:53:54 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/08/23 16:33:07 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@ int				*printd(struct dirent **file, int qty, char *opt, char *nam)
 
 void			mode_user(int mode, char *s)
 {
-	(mode&S_IRUSR) ? (lsi)ft_strncat(s, "r", 1) : (lsi)ft_strncat(s, "-", 1);
-	(mode&S_IWUSR) ? (lsi)ft_strncat(s, "w", 1) : (lsi)ft_strncat(s, "-", 1);
+	(mode&S_IRUSR) ? ft_strncat(s, "r", 1) : ft_strncat(s, "-", 1);
+	(mode&S_IWUSR) ? ft_strncat(s, "w", 1) : ft_strncat(s, "-", 1);
 	if (mode&S_IXUSR && !(mode&S_ISUID))
 		ft_strncat(s, "x", 1);
 	else if (mode&S_IXUSR && mode&S_ISUID)
@@ -85,8 +85,8 @@ void			mode_user(int mode, char *s)
 
 void			mode_grup(int mode, char *s)
 {
-	(mode&S_IRGRP) ? (lsi)ft_strncat(s, "r", 1) : (lsi)ft_strncat(s, "-", 1);
-	(mode&S_IWGRP) ? (lsi)ft_strncat(s, "w", 1) : (lsi)ft_strncat(s, "-", 1);
+	(mode&S_IRGRP) ? ft_strncat(s, "r", 1) : ft_strncat(s, "-", 1);
+	(mode&S_IWGRP) ? ft_strncat(s, "w", 1) : ft_strncat(s, "-", 1);
 	if (mode&S_IXGRP && !(mode&S_ISGID))
 		ft_strncat(s, "x", 1);
 	else if (mode&S_IXGRP && mode&S_ISGID)
@@ -99,8 +99,8 @@ void			mode_grup(int mode, char *s)
 
 void			mode_othr(int mode, char *s)
 {
-	(mode&S_IROTH) ? (lsi)ft_strncat(s, "r", 1) : (lsi)ft_strncat(s, "-", 1);
-	(mode&S_IWOTH) ? (lsi)ft_strncat(s, "w", 1) : (lsi)ft_strncat(s, "-", 1);
+	(mode&S_IROTH) ? ft_strncat(s, "r", 1) : ft_strncat(s, "-", 1);
+	(mode&S_IWOTH) ? ft_strncat(s, "w", 1) : ft_strncat(s, "-", 1);
 	if (mode&S_IXOTH && !(mode&S_ISVTX))
 		ft_strncat(s, "x", 1);
 	else if (mode&S_IXOTH && mode&S_ISVTX)
@@ -145,12 +145,12 @@ void				append_uid_gid(char *str, stats statf, char *opt, long int *lns)
 lsi					get_time_append(stats statf, char *opt)
 {
 	if (!opt)
-		return (statf.st_mtim.tv_sec);
+		return (statf.st_mtime);
 	if (opt[C])
-		return (statf.st_ctim.tv_sec);
+		return (statf.st_ctime);
 	else if (opt[U])
-		return (statf.st_atim.tv_sec);
-	return (statf.st_mtim.tv_sec);
+		return (statf.st_atime);
+	return (statf.st_mtime);
 }
 
 void				append_time(char *str, stats statf, char *opt)
@@ -336,6 +336,7 @@ int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 			(str_stat[2] != NULL) ? free(str_stat[2]) : 1;
 		}
 	free(str_stat[0]);
+	ft_putchar('\n');
 	return (order);
 }
 
@@ -421,6 +422,5 @@ void			list_dir(char *opt, char *av, DIR *inp, int context)
 	while (readtab[i++])
 		free(readtab[i]);
 	free(readtab);
-	(opt && opt[L]) ? ft_putchar('\n') : 1;
 	closedir(dir_id);
 }
