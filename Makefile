@@ -6,7 +6,7 @@
 #    By: vboivin <marvin42.fr>                     +#+   +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/17 14:50:04 by vboivin           #+#    #+#              #
-#    Updated: 2017/08/23 16:51:35 by vboivin          ###   ########.fr        #
+#    Updated: 2017/08/26 21:40:03 by vboivin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,8 @@ FLAGS		= -Wall -Werror -Wextra
 COMP		= gcc
 LIBFT		= -Llibft -lft
 
-SRCS 		= main.c sort.c options.c listing.c file_sort.c
+SRCS 		= main.c sort.c options.c file_sort.c listing_1.c listing_2.c \
+			  listing_3.c listing_4.c listing_5.c
 DIR_SRC		= $(addprefix $(SRCPATH)/, $(SRCS))
 SRCPATH		= src
 
@@ -45,5 +46,7 @@ clean:
 fclean:
 	@make fclean -C libft
 	@rm -rf $(DIR_OBJ)
+test:
+	@sh ./.test.sh
 
 re: fclean all

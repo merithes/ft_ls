@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hls.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/08/26 21:25:52 by vboivin           #+#    #+#             */
+/*   Updated: 2017/08/26 21:45:20 by vboivin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef HLS_H
 # define HLS_H
 
@@ -66,12 +78,10 @@
 # define MAC_NPERMS_1 "ft_ls: cannot open directory '"
 # define MAC_NPERMS_2 "': Permission denied"
 
-
 /*
 ** ARCH
 ** ====
 */
-
 
 /*
 ** DECLARATIONS
@@ -83,25 +93,43 @@
 ** ======
 */
 
-#define COMPARE(a, b) ((a < b) ? b : a)
+# define COMPARE(a, b) ((a < b) ? b : a)
 
 /*
 ** TYPEDEFS
 ** ========
 */
 
-typedef struct passwd pass;
-typedef struct group grps;
-typedef struct dirent dirs;
-typedef struct stat stats;
-typedef long int lsi;
+typedef struct passwd	t_pass;
+typedef struct group	t_grps;
+typedef struct dirent	t_dirs;
+typedef struct stat		t_stats;
+typedef long int		t_lsi;
 
-int					*sort(char *opt, struct dirent **inp, int qty, char *nam);
-int					*sort_solo(char *opt, char **inp, int qty);
-char				*get_opt(int ac, char **av);
-void				list_dir(char *a, char *b, DIR *inp, int is_inp_not_null);
-int					compare_stock(lsi *d, stats statf, char *name, char *o);
-char				*getstat(struct stat statf, char *str, long int *lengths, char *opt);
-char				*mknam(char *s1, char *s2);
+int						*sort(char *opt, struct dirent **inp,
+						int qty, char *nam);
+int						*sort_solo(char *opt, char **inp, int qty);
+char					*get_opt(int ac, char **av);
+void					list_dir(char *a, char *b, DIR *inp,
+						int is_inp_not_null);
+int						compare_stock(t_lsi *d, t_stats statf,
+						char *name, char *o);
+char					*getstat(struct stat statf, char *str,
+						long int *lengths, char *opt);
+char					*mknam(char *s1, char *s2);
+long int				*len_infos(char *nam, t_dirs **fil, int qty, char *o);
+void					put_total(long int blk_siz);
+char					*link_symlink(char *path_nam);
+int						*printd(struct dirent **file, int qty,
+						char *opt, char *nam);
+struct dirent			**f_ilter(char *inp);
+void					append_blk(t_stats statf, char *str, t_lsi *lengths);
+char					*translate_mod(int st_mode, char *str, char a);
+void					append_links(char *str, t_stats statf, t_lsi *lengths);
+void					append_uid_gid(char *str, t_stats statf,
+						char *opt, long int *lns);
+void					append_size(char *str, t_stats statf,
+						long int *lengths);
+void					append_time(char *str, t_stats statf, char *opt);
 
 #endif

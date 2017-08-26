@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 20:10:38 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/02 21:53:36 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/08/26 21:03:53 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void				lengths_solo(long int *lengths, char **tabs, char *options)
 {
-	stats			statf;
+	t_stats			statf;
 	int				i;
 
 	i = 0;
@@ -33,7 +33,7 @@ void				lengths_solo(long int *lengths, char **tabs, char *options)
 void				print_solo_file(char *opt, char *path, char *stat_tab,
 						long int *infos_len)
 {
-	stats			statf;
+	t_stats			statf;
 
 	if (lstat(path, &statf))
 		return ;
@@ -51,6 +51,7 @@ void				prnt_files(char **tab, char *opt, int to_line)
 	int				i[2];
 
 	ft_bzero(i, sizeof(int) * 2);
+	order = NULL;
 	if (!tab)
 		return ;
 	while (tab[i[0]] != NULL)
@@ -62,6 +63,7 @@ void				prnt_files(char **tab, char *opt, int to_line)
 		print_solo_file(opt, tab[order[i[1]++]], stat_tab, infos_len);
 	if (to_line)
 		ft_putchar('\n');
+	(order) ? free(order) : 1;
 }
 
 void				append_filename(char **tab, char *name)
@@ -76,7 +78,7 @@ void				append_filename(char **tab, char *name)
 
 int					chk_d(char **tab, int *data, char **file_list)
 {
-	stats			statf;
+	t_stats			statf;
 	DIR				*dir_id;
 
 	if (!(dir_id = opendir(tab[data[5]])))
@@ -84,7 +86,7 @@ int					chk_d(char **tab, int *data, char **file_list)
 		if (lstat(tab[data[5]], &statf) && ++data[3] && ++data[6])
 			(!data[0]) ? ft_putstr_cat(NEXIST_1, tab[data[5]], NEXIST_2, 1) : 1;
 		else if (statf.st_mode >= S_IFREG &&
-			statf.st_mode < S_IFLNK && ++data[3])
+			statf.st_mode < S_IFLNK && ++data[3] && ++data[8])
 		{
 			if (data[0] && data[0] != 2 && (data[1] = 2))
 				append_filename(file_list, tab[data[5]]);
@@ -103,9 +105,9 @@ int					main(int ac, char **av)
 {
 	char			*opt;
 	char			*tab[ac];
-	int				wit[8];
+	int				wit[9];
 
-	ft_bzero(wit, 8 * sizeof(int));
+	ft_bzero(wit, 9 * sizeof(int));
 	ft_bzero(tab, ac * sizeof(char *));
 	opt = get_opt(ac, av);
 	while (!(wit[5] = 0) && wit[0] <= 1)
@@ -115,7 +117,7 @@ int					main(int ac, char **av)
 				wit[2] += (chk_d(av, wit, tab) != 0) ? 1 : 0;
 		(wit[0]++ && wit[6]) ? ft_putstr("\n") : 1;
 	}
-	prnt_files(tab, opt, wit[7]);
+	(wit[8]) ? prnt_files(tab, opt, wit[7]) : 1;
 	wit[4] = (wit[3] && wit[2]) ? 2 : 0;
 	(!wit[3] && !wit[2]) ? list_dir(opt, ".", NULL, 0) : 1; 
 	wit[2] = (wit[2] / 2 > 1) ? 2 : 0;

@@ -14,7 +14,7 @@
 
 long int			get_filtime_solo(char *opt, char *file)
 {
-	stats			statf;
+	t_stats			statf;
 
 	if (lstat(file, &statf))
 		return (0);

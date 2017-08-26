@@ -15,7 +15,7 @@
 long int			get_filtime(char *opt, char *parent, char *file)
 {
 	char			outp[3000];
-	stats			statf;
+	t_stats			statf;
 
 	ft_bzero(outp, 3000);
 	if (parent && ft_strcmp(parent, "/"))
@@ -31,7 +31,7 @@ long int			get_filtime(char *opt, char *parent, char *file)
 	return (statf.st_mtime);
 }
 
-int					*sort_time(char *opt, dirs **tab, int qty, char *nam)
+int					*sort_time(char *opt, t_dirs **tab, int qty, char *nam)
 {
 	int				i[4];
 	int				*outp;
