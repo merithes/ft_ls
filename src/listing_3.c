@@ -6,13 +6,14 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:06:09 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/26 21:10:10 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/08/28 17:05:39 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "hls.h"
 
-char			*getstat(struct stat statf, char *str, long int *lengths, char *opt)
+char			*getstat(struct stat statf,
+					char *str, long int *lengths, char *opt)
 {
 	int			i;
 
@@ -110,6 +111,6 @@ void			put_total(long int blk_siz)
 {
 	char		*blk;
 
-	ft_putstr_cat("total ", blk = ft_litoa(blk_siz), NULL, 1);
+	pcat("total ", blk = ft_litoa(blk_siz), NULL, 1);
 	free(blk);
 }

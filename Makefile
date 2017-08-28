@@ -6,14 +6,14 @@
 #    By: vboivin <marvin42.fr>                     +#+   +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/17 14:50:04 by vboivin           #+#    #+#              #
-#    Updated: 2017/08/26 21:40:03 by vboivin          ###   ########.fr        #
+#    Updated: 2017/08/28 18:17:21 by vboivin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= ft_ls
 HPATH		= includes
 MLXPATH		= minilibx
-INC			= -I$(HPATH) -Ilibft
+INC			= -I$(HPATH) -Ilibft/includes
 FLAGS		= -Wall -Werror -Wextra
 COMP		= gcc
 LIBFT		= -Llibft -lft

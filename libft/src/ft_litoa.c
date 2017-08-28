@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/07 18:17:53 by vboivin           #+#    #+#             */
-/*   Updated: 2017/07/26 17:15:04 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/08/28 17:59:23 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static	int		ft_nblen(long int nb)
 
 static	char	*ft_excep(long int nb)
 {
-	if (nb == (long int)(((unsigned long int) - 1) / 2 ) * -1)
+	if (nb == (long int)(((unsigned long int)-1) / 2) * -1)
 		return (ft_strdup("-9223372036854775807"));
 	else
 		return (ft_strdup("0"));
@@ -40,7 +40,7 @@ char			*ft_litoa(long int nb)
 	int		isneg;
 
 	outp = NULL;
-	if (nb == 0 || nb == (long int)(((unsigned long int) - 1) / 2 ) * -1)
+	if (nb == 0 || nb == (long int)(((unsigned long int)-1) / 2) * -1)
 		return (ft_excep(nb));
 	isneg = (nb < 0) ? 1 : 0;
 	len = ft_nblen(nb);

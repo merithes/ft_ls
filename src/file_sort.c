@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/23 21:37:55 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/23 21:39:36 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/08/28 16:25:30 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,13 @@ int					*sort_solo(char *opt, char **tab, int qty)
 
 	i[0] = -1;
 	if (opt && opt[F])
-			return (not_sorted(qty));
+		return (not_sorted(qty));
 	if ((opt && opt[T]) || (opt && (opt[C] || opt[U]) && !opt[L]))
 		return (sort_time_solo(opt, tab, qty));
 	if (!(outp = malloc(sizeof(int) * (qty + 1))))
 		return (NULL);
 	ft_bzero(outp, sizeof(int) * (qty + 1));
-	while(++i[0] < qty && !(i[1] = 0))
+	while (++i[0] < qty && !(i[1] = 0))
 	{
 		i[2] = 0;
 		while (i[1] < qty)

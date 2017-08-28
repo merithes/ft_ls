@@ -3,17 +3,21 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vboivin <marvin@42.fr>                     +#+  +:+       +#+         #
+#    By: vboivin <marvin42.fr>                     +#+   +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2016/12/02 19:24:22 by vboivin           #+#    #+#              #
-#    Updated: 2017/07/26 16:48:24 by vboivin          ###   ########.fr        #
+#    Created: 2017/03/17 14:50:04 by vboivin           #+#    #+#              #
+#    Updated: 2017/08/28 18:15:11 by vboivin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = libft.a 
+NAME 		= libft.a 
+HPATH		= includes
+INC			= -I$(HPATH)
+FLAGS		= -Wall -Werror -Wextra
+COMP		= gcc
+LIBFT		= -Llibft -lft
 
-LIB = 
-SRCC =	ft_atoi.c ft_bzero.c ft_foreach.c ft_intlen.c ft_isalnum.c ft_isalpha.c\
+SRCS =	ft_atoi.c ft_bzero.c ft_foreach.c ft_intlen.c ft_isalnum.c ft_isalpha.c\
 		ft_isascii.c ft_isdigit.c ft_isprint.c ft_itoa.c ft_lenchar.c \
 		ft_lstadd.c ft_lstdel.c ft_lstdelone.c ft_lstiter.c ft_lstmap.c \
 		ft_lstnew.c ft_memalloc.c ft_memccpy.c ft_memchr.c ft_memcmp.c \
@@ -26,31 +30,39 @@ SRCC =	ft_atoi.c ft_bzero.c ft_foreach.c ft_intlen.c ft_isalnum.c ft_isalpha.c\
 		ft_strncmp.c ft_strncpy.c ft_strnequ.c ft_strnew.c ft_strnstr.c \
 		ft_strrchr.c ft_strsplit.c ft_strstr.c ft_strsub.c ft_strtrim.c \
 		ft_swap.c ft_tolower.c ft_toupper.c strchr_int.c free_join.c \
-		ft_realloc.c get_next_line.c ft_putstr_cat.c ft_putstrn.c ft_lintlen.c\
+		ft_realloc.c get_next_line.c pcat.c ft_putstrn.c ft_lintlen.c\
 		ft_litoa.c
 
-SRCO =	$(SRCC:.c=.o)
 
+DIR_SRC		= $(addprefix $(SRCPATH)/, $(SRCS))
+SRCPATH		= src
 
-HEADERS = .
+OBJ 		= $(SRCS:.c=.o)
+DIR_OBJ		= $(addprefix $(OBJPATH)/, $(OBJ))
+OBJPATH		= obj
 
 all: $(NAME)
 
-%.o: %.c libft.h Makefile
-	@printf "libft:compiling $<                 \r"
-	@gcc -Wall -Werror -Wextra -c $< -o $@ -I .
+$(OBJPATH)/%.o: $(SRCPATH)/%.c
+	@printf "Compiling $<                                            \r"
+	@$(COMP) $(FLAGS) -c $< -o $@ $(INC)
 
-$(NAME): $(SRCO)
-	@ar rc $(NAME) $(SRCO)
+$(NAME): $(DIR_OBJ)
+	@ar rc $(NAME) $(DIR_OBJ)
 	@ranlib $(NAME)
-	@printf "                                      \r"
+	@printf "                                                        \r"
 	@printf "libft compilation:\tdone\n"
 
 clean:
-	@rm -f $(SRCO)
+	@rm -rf $(DIR_OBJ)
 
-fclean: clean
+fclean:
+	@rm -rf $(DIR_OBJ)
 	@rm -f $(NAME)
 
-re: fclean
-	@make
+test:
+	@sh ./.test.sh
+
+re: fclean all
+
+SRCO =	$(SRCC:.c=.o)

@@ -6,11 +6,29 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/26 18:22:20 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/26 21:07:19 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/08/28 17:56:49 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "hls.h"
+
+void			lengths_solo(long int *lengths, char **tabs, char *options)
+{
+	t_stats		statf;
+	int			i;
+
+	i = 0;
+	ft_bzero(lengths, sizeof(long int) * MAX_LENS);
+	while (tabs[++i])
+		if (tabs[i][0] != '-' && !lstat(tabs[i], &statf))
+			compare_stock(lengths, statf, tabs[i], options);
+	i = 1;
+	while (lengths[SIZ_TMP] % i != lengths[SIZ_TMP] && ++lengths[SIZ_LEN])
+		i *= 10;
+	i = 1;
+	while (lengths[LNK_TMP] % i != lengths[LNK_TMP] && ++lengths[LNK_LEN])
+		i *= 10;
+}
 
 struct dirent	**f_ilter(char *inp)
 {
@@ -58,15 +76,12 @@ int				*printd(struct dirent **file, int qty, char *opt, char *nam)
 		{
 			if (opt && opt[S] &&
 				!lstat((tmp = mknam(nam, file[order[i]]->d_name)), &statf))
-				{
-					ft_putnbr(statf.st_blocks/2);
-					ft_putchar('\t');
-					free(tmp);
-				}
-			ft_putstr_cat(NULL, file[order[i]]->d_name, NULL, 1);
+			{
+				ft_putnbr(statf.st_blocks / 2);
+				ft_putchar('\t');
+				free(tmp);
+			}
+			pcat(NULL, file[order[i]]->d_name, NULL, 1);
 		}
-	ft_putchar('\n');
 	return (order);
 }
-
-

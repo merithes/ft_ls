@@ -75,7 +75,7 @@ void				ft_putstr(char *str);
 void				ft_putstrn(char *str, int n);
 void				ft_putendl(char *str);
 void				ft_putnbr(int nbr);
-void				ft_putstr_cat(char *s1, char *s2, char *s3, int ret);
+void				pcat(char *s1, char *s2, char *s3, int ret);
 void				ft_putchar_fd(char c, int fd);
 void				ft_putstr_fd(char *str, int fd);
 void				ft_putendl_fd(char *str, int fd);

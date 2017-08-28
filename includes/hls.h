@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:25:52 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/26 21:45:20 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/08/28 18:16:39 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,5 +131,7 @@ void					append_uid_gid(char *str, t_stats statf,
 void					append_size(char *str, t_stats statf,
 						long int *lengths);
 void					append_time(char *str, t_stats statf, char *opt);
+void					lengths_solo(long int *lengths, char **tabs,
+							char *options);
 
 #endif

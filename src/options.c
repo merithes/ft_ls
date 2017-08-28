@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   options.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/08/28 17:08:17 by vboivin           #+#    #+#             */
+/*   Updated: 2017/08/28 17:10:42 by vboivin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "hls.h"
 
 void			register_opt(char *outp, char a)
@@ -14,7 +26,8 @@ void			register_opt(char *outp, char a)
 	outp[O] = (a == 'o') ? outp[O] + 1 : outp[O];
 	outp[G] = (a == 'g') ? outp[G] + 1 : outp[G];
 	if (a == 'f' || a == 't')
-		(a == 'f') ? (outp[T] = 0) : (outp[F] = 0);
+		(a == 'f') ? (outp[T] = 0)
+			: (outp[F] = 0);
 }
 
 char			*opt_filter(char *av, char *inp)
@@ -23,12 +36,13 @@ char			*opt_filter(char *av, char *inp)
 	char		*outp;
 	int			i;
 
-	if (!(i = 0) && !(outp = inp))
+	if (!(i = 0) &&
+		!(outp = inp))
 		if (!(outp = ft_strnew(MAX_OPT)))
 			return (NULL);
 	while ((a = av[++i]) != 0)
 	{
-		if (a != 'l' && a != 'R' && a != 'a' && a != 'r' && a != 't' && a != 'c' 
+		if (a != 'l' && a != 'R' && a != 'a' && a != 'r' && a != 't' && a != 'c'
 			&& a != 's' && a != 'f' && a != 'u' && a != 'o' && a != 'g')
 		{
 			free(outp);
@@ -55,9 +69,8 @@ char			*get_opt(int ac, char **av)
 	{
 		if (av[iav][0] != '-')
 			iav++;
-		else
-			if (!(outp = opt_filter(av[iav++], outp)) || ++witness == 0)
-				return (NULL);
+		else if (!(outp = opt_filter(av[iav++], outp)) || ++witness == 0)
+			return (NULL);
 	}
 	if (witness == 0)
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:04:58 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/26 21:10:01 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/08/28 16:44:34 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 	order = sort(opt, file, qty, nam);
 	infos_len = len_infos(nam, file, qty, opt);
 	put_total(infos_len[BLK_CNT]);
-	while (++i < qty)
+	while (++i < qty && order != NULL)
 		if ((file[order[i]]->d_name[0] != '.' || (opt && (opt[A] || opt[F])))
 			&& !lstat(str_stat[1] = mknam(nam, file[order[i]]->d_name), &statf))
 		{
-			ft_putstr_cat((getstat(statf, str_stat[0], infos_len, opt))
+			pcat((getstat(statf, str_stat[0], infos_len, opt))
 				, file[order[i]]->d_name
 					, str_stat[2] = link_symlink(str_stat[1]), 1);
 			free(str_stat[1]);
@@ -38,11 +38,10 @@ int				*printd_l(char *nam, struct dirent **file, int qty, char *opt)
 		}
 	free(infos_len);
 	free(str_stat[0]);
-	ft_putchar('\n');
 	return (order);
 }
 
-void			list_tool(char *opt, struct dirent **content,
+void			list_tool(char *opt, struct dirent **dir,
 				char *nam, int qty)
 {
 	int				*ord;
@@ -50,23 +49,23 @@ void			list_tool(char *opt, struct dirent **content,
 	int				i;
 	DIR				*direc;
 
-	if ((i = -1) && opt && opt[L])
-		ord = printd_l(nam, content, qty, opt);
-	else
-		ord = printd(content, qty, opt, nam);
-	if (!ord)
+	ord = (opt && opt[L]) ? printd_l(nam, dir, qty, opt)
+		: printd(dir, qty, opt, nam);
+	ft_putchar('\n');
+	if (!(i = -1) || !ord)
 		return ;
 	while (++i < qty && (opt && opt[REC]))
-		if (content[ord[i]]->d_type == 4 && (((opt && opt[REC]) &&
-				(ft_strcmp(content[ord[i]]->d_name, ".") != 0 &&
-					ft_strcmp(content[ord[i]]->d_name, "..") != 0)) &&
-						((content[ord[i]]->d_name[0] != '.') ||
+		if (dir[ord[i]]->d_type == 4 && (((opt && opt[REC]) &&
+				(ft_strcmp(dir[ord[i]]->d_name, ".") != 0 &&
+					ft_strcmp(dir[ord[i]]->d_name, "..") != 0)) &&
+						((dir[ord[i]]->d_name[0] != '.') ||
 							(opt && (opt[A] || opt[F])))))
 		{
-			if ((direc = opendir(tmp = mknam(nam, content[ord[i]]->d_name))))
+			if ((direc = opendir(
+				tmp = mknam(nam, dir[ord[i]]->d_name))))
 				list_dir(opt, tmp, direc, 1);
 			else
-				ft_putstr_cat("ft_ls: ", content[ord[i]]->d_name, ": Permission denied", 1);
+				pcat("ft_ls: ", dir[ord[i]]->d_name, ": Permission denied", 1);
 			free(tmp);
 		}
 	free(ord);
@@ -114,7 +113,7 @@ void			list_dir(char *opt, char *av, DIR *inp, int context)
 	if (!(readtab = f_ilter(av)))
 		return ;
 	if ((opt && opt[REC]) || context / 2)
-		ft_putstr_cat(av, ":", NULL, 1);
+		pcat(av, ":", NULL, 1);
 	dir_id = (context % 2) ? inp : opendir(av);
 	while (++i >= 0)
 	{

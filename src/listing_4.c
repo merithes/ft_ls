@@ -6,13 +6,13 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:06:45 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/26 21:10:19 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/08/28 16:27:01 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "hls.h"
 
-t_lsi					get_time_append(t_stats statf, char *opt)
+t_lsi			get_time_append(t_stats statf, char *opt)
 {
 	if (!opt)
 		return (statf.st_mtime);
@@ -23,10 +23,10 @@ t_lsi					get_time_append(t_stats statf, char *opt)
 	return (statf.st_mtime);
 }
 
-void				append_time(char *str, t_stats statf, char *opt)
+void			append_time(char *str, t_stats statf, char *opt)
 {
-	char			time_alpha[23];
-	time_t			tim;
+	char		time_alpha[23];
+	time_t		tim;
 
 	tim = get_time_append(statf, opt);
 	ft_bzero(time_alpha, sizeof(char) * 23);
@@ -91,5 +91,4 @@ void			append_links(char *str, t_stats statf, t_lsi *lengths)
 	ft_strncat(str, tmp, i);
 	free(tmp);
 	ft_strncat(str, " ", 1);
-
 }
