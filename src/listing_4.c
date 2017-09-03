@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:06:45 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/28 16:27:01 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/09/03 20:13:27 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,11 @@ void			append_size(char *str, t_stats statf, long int *lengths)
 	char		*size_alpha;
 	size_t		len;
 
+	if (lengths[BLK_CHR] && (S_ISBLK(statf.st_mode) || S_ISCHR(statf.st_mode)))
+	{
+		append_major_minor(statf, lengths, str);
+		return ;
+	}
 	if (!(size_alpha = ft_litoa(statf.st_size)))
 		return ;
 	len = ft_strlen(size_alpha);

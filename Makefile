@@ -6,7 +6,7 @@
 #    By: vboivin <marvin42.fr>                     +#+   +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/17 14:50:04 by vboivin           #+#    #+#              #
-#    Updated: 2017/08/29 21:04:28 by vboivin          ###   ########.fr        #
+#    Updated: 2017/09/03 21:15:18 by vboivin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ COMP		= gcc
 LIBFT		= -Llibft -lft
 
 SRCS 		= main.c sort.c options.c file_sort.c listing_1.c listing_2.c \
-			  listing_3.c listing_4.c listing_5.c sort_params.c
+			  listing_3.c listing_4.c listing_5.c sort_params.c listing_moar.c
 DIR_SRC		= $(addprefix $(SRCPATH)/, $(SRCS))
 SRCPATH		= src
 
@@ -48,6 +48,16 @@ fclean:
 	@rm -rf $(DIR_OBJ)
 	@rm -rf $(NAME)
 test:
-	@sh ./.test.sh
+	@mkdir test_dir
+	@mkdir test_dir/test_rec
+	@mkdir test_dir/test_rec2
+	@touch test_dir/test_file
+	@touch test_dir/test_file2
+	@chmod 7000 test_dir/test_file
+	@chmod 7777 test_dir/test_file2
+	@ln -s test_dir/test_file test_dir/test_link
+
+rmtest:
+	@rm -rf test_dir
 
 re: fclean all

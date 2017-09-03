@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:06:09 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/29 21:21:25 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/09/03 18:48:33 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,9 @@
 char			*getstat(struct stat statf,
 					char *str, long int *lengths, char *opt)
 {
-	int			i;
-
 	ft_bzero(str, STRSIZE);
 	(opt && opt[S]) ? append_blk(statf, str, lengths) : 1;
-	i = 0;
-	if (statf.st_mode >= S_IFLNK && 1 + (statf.st_mode -= S_IFLNK))
-		translate_mod(statf.st_mode, str, 'l');
-	else if (statf.st_mode < S_IFLNK && statf.st_mode >= S_IFREG &&
-		1 + (statf.st_mode -= S_IFREG))
-		translate_mod(statf.st_mode, str, '-');
-	else if (statf.st_mode < S_IFREG && 1 + (statf.st_mode -= S_IFDIR))
-		translate_mod(statf.st_mode, str, 'd');
+	translate_mod(statf.st_mode, str);
 	ft_strncat(str, " ", 1);
 	append_links(str, statf, lengths);
 	append_uid_gid(str, statf, opt, lengths);
@@ -49,6 +40,14 @@ int				compare_stock(t_lsi *d, t_stats statf, char *name, char *o)
 		d[LNK_TMP] = COMPARE((size_t)d[LNK_TMP], statf.st_nlink);
 		d[BLK_TMP] = COMPARE(d[BLK_TMP], statf.st_blocks);
 		d[BLK_CNT] += (name[0] != '.' || (o && o[A])) ? statf.st_blocks : 0;
+		if (S_ISBLK(statf.st_mode) || S_ISCHR(statf.st_mode))
+		{
+			d[BLK_CHR] = 1;
+			d[MAJ_TMP] = (((statf.st_rdev >> 24) & 0xFF) > d[MAJ_TMP]) ?
+				((statf.st_rdev >> 24) & 0xFF) : d[MAJ_TMP];
+			d[MIN_TMP] = ((statf.st_rdev & 0xFF) > d[MIN_TMP]) ?
+				(statf.st_rdev & 0xFF) : d[MIN_TMP];
+		}
 		if (uid && gid)
 		{
 			d[UID_LEN] = COMPARE(d[UID_LEN], (long int)ft_strlen(uid->pw_name));
@@ -76,7 +75,12 @@ long int		*len_infos(char *nam,
 		free(nam_made);
 		compare_stock(d, statf, fil[i]->d_name, o);
 	}
-	d[SIZ_LEN] = ft_lintlen(d[SIZ_TMP]);
+	if (d[BLK_CHR])
+		d[SIZ_LEN] = ft_lintlen(d[MAJ_TMP]) + ft_lintlen(d[MIN_TMP]) + 2;
+	else
+		d[SIZ_LEN] = ft_lintlen(d[SIZ_TMP]);
+	d[MIN_LEN] = ft_lintlen(d[MIN_TMP]);
+	d[MAJ_LEN] = ft_lintlen(d[MAJ_TMP]);
 	d[LNK_LEN] = ft_lintlen(d[LNK_TMP]);
 	d[BLK_LEN] = ft_lintlen(d[BLK_TMP]);
 	return (d);

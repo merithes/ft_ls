@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:07:32 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/28 17:07:59 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/09/03 18:02:46 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,24 @@ void				mode_othr(int mode, char *s)
 		ft_strncat(s, "-", 1);
 }
 
-char				*translate_mod(int st_mode, char *str, char a)
+char				*translate_mod(int st_mode, char *str)
 {
-	ft_strncat(str, &a, 1);
+	if (S_ISLNK(st_mode))
+		ft_strncat(str, "l", 1);
+	else if(S_ISDIR(st_mode))
+		ft_strncat(str, "d", 1);
+	else if (S_ISREG(st_mode))
+		ft_strncat(str, "-", 1);
+	else if (S_ISBLK(st_mode))
+		ft_strncat(str, "b", 1);
+	else if (S_ISCHR(st_mode))
+		ft_strncat(str, "c", 1);
+	else if (S_ISFIFO(st_mode))
+		ft_strncat(str, "p", 1);
+	else if (S_ISSOCK(st_mode))
+		ft_strncat(str, "s", 1);
+	else
+		ft_strncat(str, "u", 1);
 	mode_user(st_mode, str);
 	mode_grup(st_mode, str);
 	mode_othr(st_mode, str);
@@ -64,7 +79,7 @@ char				*translate_mod(int st_mode, char *str, char a)
 }
 
 void				append_uid_gid(char *str,
-						t_stats statf, char *opt, long int *lns)
+		t_stats statf, char *opt, long int *lns)
 {
 	struct group	*g_info;
 	struct passwd	*u_info;

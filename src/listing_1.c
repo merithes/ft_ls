@@ -6,26 +6,11 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/26 18:22:20 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/29 21:21:28 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/09/03 18:40:24 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "hls.h"
-
-void			lengths_solo(long int *lengths, char **tabs, char *options)
-{
-	t_stats		statf;
-	int			i;
-
-	i = -1;
-	ft_bzero(lengths, sizeof(long int) * MAX_LENS);
-	while (tabs[++i])
-		if (!lstat(tabs[i], &statf))
-			compare_stock(lengths, statf, tabs[i], options);
-	lengths[SIZ_LEN] = ft_intlen(lengths[SIZ_TMP]);
-	lengths[LNK_LEN] = ft_intlen(lengths[LNK_TMP]);
-	lengths[BLK_LEN] = ft_intlen(lengths[BLK_TMP]);
-}
 
 struct dirent	**f_ilter(char *inp)
 {

@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:25:52 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/29 21:04:16 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/09/03 18:49:43 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,13 @@
 # define BLK_CNT 6
 # define BLK_TMP 7
 # define BLK_LEN 8
+# define MAJ_TMP 9
+# define MAJ_LEN 10
+# define MIN_TMP 11
+# define MIN_LEN 12
+# define BLK_CHR 13
 
-# define MAX_LENS 9
+# define MAX_LENS 14
 # define STRSIZE MAXPATHLEN
 
 /*
@@ -125,7 +130,7 @@ int						*printd(struct dirent **file, int qty,
 						char *opt, char *nam);
 struct dirent			**f_ilter(char *inp);
 void					append_blk(t_stats statf, char *str, t_lsi *lengths);
-char					*translate_mod(int st_mode, char *str, char a);
+char					*translate_mod(int st_mode, char *str);
 void					append_links(char *str, t_stats statf, t_lsi *lengths);
 void					append_uid_gid(char *str, t_stats statf,
 						char *opt, long int *lns);
@@ -135,5 +140,6 @@ void					append_time(char *str, t_stats statf, char *opt);
 void					lengths_solo(long int *lengths, char **tabs,
 							char *options);
 void					sort_params(char **sort, int ac, char *opt);
+void					append_major_minor(t_stats statf, t_lsi *lengths, char *str);
 
 #endif

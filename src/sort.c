@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/23 21:38:06 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/29 21:42:00 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/09/03 14:18:32 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,33 @@ long int			get_filtime(char *opt, char *parent, char *file)
 	return (statf.st_mtime);
 }
 
-void				repass_sort_time()
-{}
+void				swapper_alpha_time(char *opt, t_dirs **tab, int qty, char *nam)
+{
+	int				*alpha;
+	t_dirs			*tmp[qty + 1];
+	int				i;
+	int				temp_o[3];
+
+	temp_o[0] = opt[T];
+	temp_o[1] = opt[U];
+	temp_o[2] = opt[C];
+	opt[T] = 0;
+	opt[U] = 0;
+	opt[C] = 0;
+
+	if (!(alpha = sort(opt, tab, qty, nam)))
+		return ;
+	i = -1;
+	while (++i < qty)
+		tmp[i] = tab[alpha[i]];
+	i = -1;
+	while (++i < qty)
+		tab[i] = tmp[i];
+	opt[T] = temp_o[0];
+	opt[U] = temp_o[1];
+	opt[C] = temp_o[2];
+	free(alpha);
+}
 
 int					*sort_time(char *opt, t_dirs **tab, int qty, char *nam)
 {
@@ -40,6 +65,7 @@ int					*sort_time(char *opt, t_dirs **tab, int qty, char *nam)
 	int				*outp;
 	long int		times[qty];
 
+	swapper_alpha_time(opt, tab, qty, nam);
 	if (!(outp = malloc(sizeof(int) * (qty + 1))))
 		return (NULL);
 	i[0] = -1;
@@ -57,7 +83,6 @@ int					*sort_time(char *opt, t_dirs **tab, int qty, char *nam)
 				i[3]++;
 		outp[i[3]] = i[0];
 	}
-	repass_sort_time(tab, qty, outp, opt);
 	return (outp);
 }
 

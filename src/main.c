@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 20:10:38 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/29 21:21:52 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/09/03 20:26:09 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,7 @@ int					chk_d(char **tab, int *data, char **file_list)
 			return (0);
 		else if (lstat(tab[data[5]], &statf) && ++data[3] && ++data[6])
 			(!data[0]) ? pcat(NEXIST_1, tab[data[5]], NEXIST_2, 1) : 1;
-		else if (statf.st_mode >= S_IFREG &&
-			statf.st_mode < S_IFLNK && ++data[3] && ++data[8])
+		else if (!S_ISDIR(statf.st_mode) && ++data[3] && ++data[8])
 		{
 			if (data[0] && data[0] != 2 && (data[1] = 2))
 				append_filename(file_list, tab[data[5]]);
