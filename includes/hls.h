@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:25:52 by vboivin           #+#    #+#             */
-/*   Updated: 2017/09/03 18:49:43 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/09/03 23:00:46 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,7 @@ void					append_time(char *str, t_stats statf, char *opt);
 void					lengths_solo(long int *lengths, char **tabs,
 							char *options);
 void					sort_params(char **sort, int ac, char *opt);
-void					append_major_minor(t_stats statf, t_lsi *lengths, char *str);
+void					append_major_minor(t_stats statf,
+							t_lsi *lengths, char *str);
 
 #endif

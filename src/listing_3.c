@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:06:09 by vboivin           #+#    #+#             */
-/*   Updated: 2017/09/03 18:48:33 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/09/03 22:58:40 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ int				compare_stock(t_lsi *d, t_stats statf, char *name, char *o)
 	{
 		if (statf.st_size > d[0] && (name[0] != '.' || (o && o[A])))
 			d[SIZ_TMP] = statf.st_size;
-		d[LNK_TMP] = COMPARE((size_t)d[LNK_TMP], statf.st_nlink);
-		d[BLK_TMP] = COMPARE(d[BLK_TMP], statf.st_blocks);
+		d[LNK_TMP] = COMP((size_t)d[LNK_TMP], statf.st_nlink);
+		d[BLK_TMP] = COMP(d[BLK_TMP], statf.st_blocks);
 		d[BLK_CNT] += (name[0] != '.' || (o && o[A])) ? statf.st_blocks : 0;
 		if (S_ISBLK(statf.st_mode) || S_ISCHR(statf.st_mode))
 		{
@@ -48,11 +48,8 @@ int				compare_stock(t_lsi *d, t_stats statf, char *name, char *o)
 			d[MIN_TMP] = ((statf.st_rdev & 0xFF) > d[MIN_TMP]) ?
 				(statf.st_rdev & 0xFF) : d[MIN_TMP];
 		}
-		if (uid && gid)
-		{
-			d[UID_LEN] = COMPARE(d[UID_LEN], (long int)ft_strlen(uid->pw_name));
-			d[GID_LEN] = COMPARE(d[GID_LEN], (long int)ft_strlen(gid->gr_name));
-		}
+		uid ? d[UID_LEN] = COMP(d[UID_LEN], (t_lsi)ft_strlen(uid->pw_name)) : 1;
+		gid ? d[GID_LEN] = COMP(d[GID_LEN], (t_lsi)ft_strlen(gid->gr_name)) : 1;
 	}
 	return (0);
 }

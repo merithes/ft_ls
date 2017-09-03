@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:07:32 by vboivin           #+#    #+#             */
-/*   Updated: 2017/09/03 18:02:46 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/09/03 22:59:20 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ char				*translate_mod(int st_mode, char *str)
 {
 	if (S_ISLNK(st_mode))
 		ft_strncat(str, "l", 1);
-	else if(S_ISDIR(st_mode))
+	else if (S_ISDIR(st_mode))
 		ft_strncat(str, "d", 1);
 	else if (S_ISREG(st_mode))
 		ft_strncat(str, "-", 1);

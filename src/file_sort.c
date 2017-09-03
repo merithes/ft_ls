@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/23 21:38:06 by vboivin           #+#    #+#             */
-/*   Updated: 2017/09/03 14:26:12 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/09/03 22:41:55 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ static void			swapper_alpha_time(char *opt, char **tab, int qty)
 	opt[T] = 0;
 	opt[U] = 0;
 	opt[C] = 0;
-
 	if (!(alpha = sort_solo(opt, tab, qty)))
 		return ;
 	i = -1;

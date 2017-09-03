@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/23 21:38:06 by vboivin           #+#    #+#             */
-/*   Updated: 2017/09/03 14:18:32 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/09/03 23:00:20 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ long int			get_filtime(char *opt, char *parent, char *file)
 	return (statf.st_mtime);
 }
 
-void				swapper_alpha_time(char *opt, t_dirs **tab, int qty, char *nam)
+void				swapper_alpha_time(char *opt,
+						t_dirs **tab, int qty, char *nam)
 {
 	int				*alpha;
 	t_dirs			*tmp[qty + 1];
@@ -44,7 +45,6 @@ void				swapper_alpha_time(char *opt, t_dirs **tab, int qty, char *nam)
 	opt[T] = 0;
 	opt[U] = 0;
 	opt[C] = 0;
-
 	if (!(alpha = sort(opt, tab, qty, nam)))
 		return ;
 	i = -1;

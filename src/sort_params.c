@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 20:52:41 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/29 21:21:27 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/09/03 22:59:57 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void				order_list(char **tab, int qty, int order[], char *opt)
 void				sort_params(char **tab, int qty, char *opt)
 {
 	int				order[qty];
-	char 			**tmp;
+	char			**tmp;
 	int				i;
 
 	if (opt && (opt[F] || opt[U]))
