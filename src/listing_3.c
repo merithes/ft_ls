@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:06:09 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/28 17:05:39 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/08/29 21:21:25 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,15 +76,9 @@ long int		*len_infos(char *nam,
 		free(nam_made);
 		compare_stock(d, statf, fil[i]->d_name, o);
 	}
-	i = 1;
-	while (d[SIZ_TMP] % i != d[SIZ_TMP] && ++d[SIZ_LEN])
-		i *= 10;
-	i = 1;
-	while (d[LNK_TMP] % i != d[LNK_TMP] && ++d[LNK_LEN])
-		i *= 10;
-	i = 1;
-	while (d[BLK_TMP] % i != d[BLK_TMP] && ++d[BLK_LEN])
-		i *= 10;
+	d[SIZ_LEN] = ft_lintlen(d[SIZ_TMP]);
+	d[LNK_LEN] = ft_lintlen(d[LNK_TMP]);
+	d[BLK_LEN] = ft_lintlen(d[BLK_TMP]);
 	return (d);
 }
 

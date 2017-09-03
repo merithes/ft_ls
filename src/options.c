@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/28 17:08:17 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/28 17:10:42 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/08/29 19:20:00 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ char			*get_opt(int ac, char **av)
 	int			iav;
 	int			witness;
 	char		*outp;
+	t_stats		statf;
 
 	iav = 0;
 	witness = 0;
@@ -68,6 +69,8 @@ char			*get_opt(int ac, char **av)
 	while (iav < ac && av[iav])
 	{
 		if (av[iav][0] != '-')
+			iav++;
+		else if (!lstat(av[iav], &statf))
 			iav++;
 		else if (!(outp = opt_filter(av[iav++], outp)) || ++witness == 0)
 			return (NULL);

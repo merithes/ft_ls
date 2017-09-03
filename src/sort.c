@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/23 21:38:06 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/28 18:14:04 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/08/29 21:42:00 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 long int			get_filtime(char *opt, char *parent, char *file)
 {
-	char			outp[3000];
+	char			outp[MAXPATHLEN];
 	t_stats			statf;
 
-	ft_bzero(outp, 3000);
+	ft_bzero(outp, MAXPATHLEN);
 	if (parent && ft_strcmp(parent, "/"))
 		ft_strcpy(outp, parent);
 	ft_strcat(outp, "/");
@@ -30,6 +30,9 @@ long int			get_filtime(char *opt, char *parent, char *file)
 		return (statf.st_atime);
 	return (statf.st_mtime);
 }
+
+void				repass_sort_time()
+{}
 
 int					*sort_time(char *opt, t_dirs **tab, int qty, char *nam)
 {
@@ -54,6 +57,7 @@ int					*sort_time(char *opt, t_dirs **tab, int qty, char *nam)
 				i[3]++;
 		outp[i[3]] = i[0];
 	}
+	repass_sort_time(tab, qty, outp, opt);
 	return (outp);
 }
 

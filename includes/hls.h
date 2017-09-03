@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:25:52 by vboivin           #+#    #+#             */
-/*   Updated: 2017/08/28 18:16:39 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/08/29 21:04:16 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <string.h>
 # include <sys/stat.h>
+# include <sys/param.h>
 # include <dirent.h>
 # include <time.h>
 # include <grp.h>
@@ -56,7 +57,7 @@
 # define BLK_LEN 8
 
 # define MAX_LENS 9
-# define STRSIZE 1080
+# define STRSIZE MAXPATHLEN
 
 /*
 ** /!\SYSTEM DEPENDANT /!\
@@ -133,5 +134,6 @@ void					append_size(char *str, t_stats statf,
 void					append_time(char *str, t_stats statf, char *opt);
 void					lengths_solo(long int *lengths, char **tabs,
 							char *options);
+void					sort_params(char **sort, int ac, char *opt);
 
 #endif
