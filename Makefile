@@ -6,7 +6,7 @@
 #    By: vboivin <marvin42.fr>                     +#+   +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/17 14:50:04 by vboivin           #+#    #+#              #
-#    Updated: 2017/09/03 21:15:18 by vboivin          ###   ########.fr        #
+#    Updated: 2017/09/05 18:17:13 by vboivin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,7 @@ clean:
 	@make clean -C libft
 	@rm -rf $(OBJ)
 
-fclean:
+fclean: rmtest
 	@make fclean -C libft
 	@rm -rf $(DIR_OBJ)
 	@rm -rf $(NAME)
