@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/23 21:38:06 by vboivin           #+#    #+#             */
-/*   Updated: 2017/09/03 23:00:20 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/09/13 20:07:45 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,17 @@ void				swapper_alpha_time(char *opt,
 	int				*alpha;
 	t_dirs			*tmp[qty + 1];
 	int				i;
-	int				temp_o[3];
+	int				temp_o[4];
 
 	temp_o[0] = opt[T];
 	temp_o[1] = opt[U];
 	temp_o[2] = opt[C];
+	temp_o[3] = opt[REV];
 	opt[T] = 0;
 	opt[U] = 0;
 	opt[C] = 0;
-	if (!(alpha = sort(opt, tab, qty, nam)))
-		return ;
+	opt[REV] = 0;
+	(!(alpha = sort(opt, tab, qty, nam))) ? exit(-151) : 1;
 	i = -1;
 	while (++i < qty)
 		tmp[i] = tab[alpha[i]];
@@ -56,6 +57,7 @@ void				swapper_alpha_time(char *opt,
 	opt[T] = temp_o[0];
 	opt[U] = temp_o[1];
 	opt[C] = temp_o[2];
+	opt[REV] = temp_o[3];
 	free(alpha);
 }
 
