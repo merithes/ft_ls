@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/25 21:06:31 by vboivin           #+#    #+#             */
-/*   Updated: 2017/09/25 21:06:34 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/10/09 20:55:33 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void				append_uid_gid(char *str,
 	{
 		g_info = getgrgid(statf.st_gid);
 		tmp = g_info ? g_info->gr_name : ft_litoa((long int)statf.st_gid);
-		ft_strncat(str, g_info->gr_name, i = ft_strlen(g_info->gr_name));
+		ft_strncat(str, tmp, i = ft_strlen(tmp));
 		while (i++ < lns[GID_LEN] + 1)
 			ft_strncat(str, " ", 1);
 		!g_info ? free(tmp) : 1;

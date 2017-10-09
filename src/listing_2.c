@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:04:58 by vboivin           #+#    #+#             */
-/*   Updated: 2017/09/25 21:04:13 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/10/09 21:02:35 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void			list_tool(char *opt, struct dirent **dir,
 
 	ord = (opt && opt[L]) ? printd_l(nam, dir, qty, opt)
 		: printd(dir, qty, opt, nam);
-	ft_putchar('\n');
 	if (!(i = -1) || !ord)
 		return ;
 	while (++i < qty && (opt && opt[REC]))
@@ -66,7 +65,7 @@ void			list_tool(char *opt, struct dirent **dir,
 				list_dir(opt, tmp, direc, 1);
 			else
 				pcat("ft_ls: ", dir[ord[i]]->d_name, ": Permission denied", 1);
-			free(tmp);
+			tmp ? free(tmp) : NULL;
 		}
 	free(ord);
 }
@@ -113,7 +112,7 @@ void			list_dir(char *opt, char *av, DIR *inp, int context)
 	if (!(readtab = f_ilter(av)))
 		return ;
 	if ((opt && opt[REC]) || context / 2)
-		pcat(av, ":", NULL, 1);
+		pcat("\n", av, ":", 1);
 	dir_id = (context % 2) ? inp : opendir(av);
 	while (++i >= 0)
 	{
