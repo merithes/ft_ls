@@ -12,10 +12,10 @@
 
 #include "hls.h"
 
-long int			get_filtime(char *opt, char *parent, char *file)
+struct timespec		get_filtime(char *opt, char *parent, char *file)
 {
 	char			outp[MAXPATHLEN];
-	t_stats			statf;
+	struct stat		statf;
 
 	ft_bzero(outp, MAXPATHLEN);
 	if (parent && ft_strcmp(parent, "/"))
@@ -23,12 +23,16 @@ long int			get_filtime(char *opt, char *parent, char *file)
 	ft_strcat(outp, "/");
 	ft_strcat(outp, file);
 	if (lstat(outp, &statf))
-		return (0);
+	{
+		statf.st_mtim.tv_sec = 0;
+		statf.st_mtim.tv_nsec = 0;
+		return (statf.st_mtim);
+	}
 	if (opt && opt[C])
-		return (statf.st_ctime);
+		return (statf.st_ctim);
 	else if (opt && opt[U])
-		return (statf.st_atime);
-	return (statf.st_mtime);
+		return (statf.st_atim);
+	return (statf.st_mtim);
 }
 
 void				swapper_alpha_time(char *opt,
@@ -65,7 +69,7 @@ int					*sort_time(char *opt, t_dirs **tab, int qty, char *nam)
 {
 	int				i[4];
 	int				*outp;
-	long int		times[qty];
+	struct timespec	times[qty];
 
 	swapper_alpha_time(opt, tab, qty, nam);
 	if (!(outp = malloc(sizeof(int) * (qty + 1))))
@@ -75,14 +79,17 @@ int					*sort_time(char *opt, t_dirs **tab, int qty, char *nam)
 	while (++i[0] < qty)
 		times[i[0]] = get_filtime(opt, nam, tab[i[0]]->d_name);
 	i[0] = -1;
-	while (++i[0] < qty)
+	while (++i[0] < qty && !(i[3] = 0))
 	{
 		i[1] = -1;
-		i[3] = 0;
 		while (++i[1] < qty)
-			if (times[i[0]] * i[2] < times[i[1]] * i[2] ||
-				(times[i[0]] == times[i[1]] && i[0] * i[2] > i[1] * i[2]))
-				i[3]++;
+			if ((times[i[0]].tv_sec * i[2] < times[i[1]].tv_sec * i[2] ||
+				(times[i[0]].tv_sec == times[i[1]].tv_sec &&
+				times[i[0]].tv_nsec * i[2] < times[i[1]].tv_nsec * i[2])) ||
+					((times[i[0]].tv_sec == times[i[1]].tv_sec &&
+					times[i[0]].tv_nsec == times[i[1]].tv_nsec) &&
+					 i[1] * i[2] > i[0] * i[2]))
+						i[3]++;
 		outp[i[3]] = i[0];
 	}
 	return (outp);

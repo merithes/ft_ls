@@ -94,12 +94,10 @@ int					main(int ac, char **av)
 	ft_bzero(tab, ac * sizeof(char *));
 	opt = get_opt(ac, av);
 	sort_params(av, ac, opt);
-	while (!(wit[5] = 0) && wit[0] <= 1)
-	{
+	wit[0]--;
+	while (!(wit[5] = 0) && ++wit[0] <= 1)
 		while (av[++wit[5]])
 			wit[2] += (chk_d(av, wit, tab) != 0) ? 1 : 0;
-		(wit[0]++ && wit[6]) ? ft_putstr("\n") : 1;
-	}
 	(wit[8]) ? prnt_files(tab, opt, wit[7]) : 1;
 	wit[4] = (wit[3] && wit[2]) ? 2 : 0;
 	(!wit[3] && !wit[2]) ? list_dir(opt, ".", NULL, 0) : 1;

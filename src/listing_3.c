@@ -43,10 +43,10 @@ int				compare_stock(t_lsi *d, t_stats statf, char *name, char *o)
 		if (S_ISBLK(statf.st_mode) || S_ISCHR(statf.st_mode))
 		{
 			d[BLK_CHR] = 1;
-			d[MAJ_TMP] = (((statf.st_rdev >> 24) & 0xFF) > d[MAJ_TMP]) ?
-				((statf.st_rdev >> 24) & 0xFF) : d[MAJ_TMP];
-			d[MIN_TMP] = ((statf.st_rdev & 0xFF) > d[MIN_TMP]) ?
-				(statf.st_rdev & 0xFF) : d[MIN_TMP];
+			d[MAJ_TMP] = ((int)((statf.st_rdev >> 24) & 0xFF) > d[MAJ_TMP]) ?
+				(t_lsi)((statf.st_rdev >> 24) & 0xFF) : d[MAJ_TMP];
+			d[MIN_TMP] = ((int)(statf.st_rdev & 0xFF) > d[MIN_TMP]) ?
+				(t_lsi)(statf.st_rdev & 0xFF) : d[MIN_TMP];
 		}
 		uid ? d[UID_LEN] = COMP(d[UID_LEN], (t_lsi)ft_strlen(uid->pw_name)) : 1;
 		gid ? d[GID_LEN] = COMP(d[GID_LEN], (t_lsi)ft_strlen(gid->gr_name)) : 1;
