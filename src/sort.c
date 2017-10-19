@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/23 21:38:06 by vboivin           #+#    #+#             */
-/*   Updated: 2017/09/13 20:07:45 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/10/19 18:56:05 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,15 @@ struct timespec		get_filtime(char *opt, char *parent, char *file)
 	ft_strcat(outp, file);
 	if (lstat(outp, &statf))
 	{
-		statf.st_mtim.tv_sec = 0;
-		statf.st_mtim.tv_nsec = 0;
-		return (statf.st_mtim);
+		statf.st_mtimespec.tv_sec = 0;
+		statf.st_mtimespec.tv_nsec = 0;
+		return (statf.st_mtimespec);
 	}
 	if (opt && opt[C])
-		return (statf.st_ctim);
+		return (statf.st_ctimespec);
 	else if (opt && opt[U])
-		return (statf.st_atim);
-	return (statf.st_mtim);
+		return (statf.st_atimespec);
+	return (statf.st_mtimespec);
 }
 
 void				swapper_alpha_time(char *opt,
@@ -69,7 +69,7 @@ int					*sort_time(char *opt, t_dirs **tab, int qty, char *nam)
 {
 	int				i[4];
 	int				*outp;
-	struct timespec	times[qty];
+	struct timespec	tim[qty];
 
 	swapper_alpha_time(opt, tab, qty, nam);
 	if (!(outp = malloc(sizeof(int) * (qty + 1))))
@@ -77,19 +77,18 @@ int					*sort_time(char *opt, t_dirs **tab, int qty, char *nam)
 	i[0] = -1;
 	i[2] = (opt && opt[REV]) ? -1 : 1;
 	while (++i[0] < qty)
-		times[i[0]] = get_filtime(opt, nam, tab[i[0]]->d_name);
+		tim[i[0]] = get_filtime(opt, nam, tab[i[0]]->d_name);
 	i[0] = -1;
 	while (++i[0] < qty && !(i[3] = 0))
 	{
 		i[1] = -1;
 		while (++i[1] < qty)
-			if ((times[i[0]].tv_sec * i[2] < times[i[1]].tv_sec * i[2] ||
-				(times[i[0]].tv_sec == times[i[1]].tv_sec &&
-				times[i[0]].tv_nsec * i[2] < times[i[1]].tv_nsec * i[2])) ||
-					((times[i[0]].tv_sec == times[i[1]].tv_sec &&
-					times[i[0]].tv_nsec == times[i[1]].tv_nsec) &&
-					 i[1] * i[2] > i[0] * i[2]))
-						i[3]++;
+			if ((tim[i[0]].tv_sec * i[2] < tim[i[1]].tv_sec * i[2] ||
+				(tim[i[0]].tv_sec == tim[i[1]].tv_sec &&
+				tim[i[0]].tv_nsec * i[2] < tim[i[1]].tv_nsec * i[2])) ||
+				((tim[i[0]].tv_sec == tim[i[1]].tv_sec && tim[i[0]].tv_nsec
+				== tim[i[1]].tv_nsec) && i[1] * i[2] > i[0] * i[2]))
+				i[3]++;
 		outp[i[3]] = i[0];
 	}
 	return (outp);
