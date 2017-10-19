@@ -39,15 +39,15 @@ struct timespec		get_param_time(char *opt, char *nam)
 
 	if (lstat(nam, &statf))
 	{
-		statf.st_mtimespec.tv_sec = 0;
-		statf.st_mtimespec.tv_nsec = 0;
-		return (statf.st_mtimespec);
+		statf.st_mtim.tv_sec = 0;
+		statf.st_mtim.tv_nsec = 0;
+		return (statf.st_mtim);
 	}
 	if (opt && opt[U])
-		return (statf.st_atimespec);
+		return (statf.st_atim);
 	if (opt && opt[C])
-		return (statf.st_ctimespec);
-	return (statf.st_mtimespec);
+		return (statf.st_ctim);
+	return (statf.st_mtim);
 }
 
 void				order_list_t(char **tab, int qty, int order[], char *opt)

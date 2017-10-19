@@ -24,15 +24,15 @@ struct timespec		get_filtime(char *opt, char *parent, char *file)
 	ft_strcat(outp, file);
 	if (lstat(outp, &statf))
 	{
-		statf.st_mtimespec.tv_sec = 0;
-		statf.st_mtimespec.tv_nsec = 0;
-		return (statf.st_mtimespec);
+		statf.st_mtim.tv_sec = 0;
+		statf.st_mtim.tv_nsec = 0;
+		return (statf.st_mtim);
 	}
 	if (opt && opt[C])
-		return (statf.st_ctimespec);
+		return (statf.st_ctim);
 	else if (opt && opt[U])
-		return (statf.st_atimespec);
-	return (statf.st_mtimespec);
+		return (statf.st_atim);
+	return (statf.st_mtim);
 }
 
 void				swapper_alpha_time(char *opt,

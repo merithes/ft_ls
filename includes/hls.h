@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:25:52 by vboivin           #+#    #+#             */
-/*   Updated: 2017/09/05 13:30:23 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/10/19 19:14:52 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,12 @@
 ** MACs
 ** ====
 */
-# define SIX_MONTH 15552000
+
+# ifdef __APPLE__
+#  define st_atim st_atimespec
+#  define st_mtim st_mtimespec
+#  define st_ctim st_ctimespec
+# endif
 # define MAC_NEXIST_1 "ft_ls: cannot access '"
 # define MAC_NEXIST_2 "': no such file or directory"
 # define MAC_NPERMS_1 "ft_ls: cannot open directory '"
@@ -93,6 +98,8 @@
 ** DECLARATIONS
 ** ============
 */
+
+# define SIX_MONTH 15552000
 
 /*
 ** MACROS
