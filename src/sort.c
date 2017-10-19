@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/23 21:38:06 by vboivin           #+#    #+#             */
-/*   Updated: 2017/10/19 18:56:05 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/10/19 19:45:05 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,15 @@ struct timespec		get_filtime(char *opt, char *parent, char *file)
 	ft_strcat(outp, file);
 	if (lstat(outp, &statf))
 	{
-		statf.st_mtim.tv_sec = 0;
-		statf.st_mtim.tv_nsec = 0;
-		return (statf.st_mtim);
+		statf.MTIME.tv_sec = 0;
+		statf.MTIME.tv_nsec = 0;
+		return (statf.MTIME);
 	}
 	if (opt && opt[C])
-		return (statf.st_ctim);
+		return (statf.CTIME);
 	else if (opt && opt[U])
-		return (statf.st_atim);
-	return (statf.st_mtim);
+		return (statf.ATIME);
+	return (statf.MTIME);
 }
 
 void				swapper_alpha_time(char *opt,

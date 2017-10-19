@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/26 21:25:52 by vboivin           #+#    #+#             */
-/*   Updated: 2017/10/19 19:14:52 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/10/19 19:52:36 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,11 @@
 */
 
 # ifdef __APPLE__
-#  define st_atim st_atimespec
-#  define st_mtim st_mtimespec
-#  define st_ctim st_ctimespec
+#  define MTIME st_mtimespec
+#  define ATIME st_atimespec
+#  define CTIME st_ctimespec
 # endif
+
 # define MAC_NEXIST_1 "ft_ls: cannot access '"
 # define MAC_NEXIST_2 "': no such file or directory"
 # define MAC_NPERMS_1 "ft_ls: cannot open directory '"
@@ -93,6 +94,12 @@
 ** ARCH
 ** ====
 */
+
+# ifndef __APPLE__
+#  define MTIME st_mtim
+#  define ATIME st_atim
+#  define CTIME st_ctim
+# endif
 
 /*
 ** DECLARATIONS

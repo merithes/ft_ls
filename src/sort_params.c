@@ -6,7 +6,7 @@
 /*   By: vboivin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 20:52:41 by vboivin           #+#    #+#             */
-/*   Updated: 2017/10/19 18:50:43 by vboivin          ###   ########.fr       */
+/*   Updated: 2017/10/19 19:51:29 by vboivin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,15 @@ struct timespec		get_param_time(char *opt, char *nam)
 
 	if (lstat(nam, &statf))
 	{
-		statf.st_mtim.tv_sec = 0;
-		statf.st_mtim.tv_nsec = 0;
-		return (statf.st_mtim);
+		statf.MTIME.tv_sec = 0;
+		statf.MTIME.tv_nsec = 0;
+		return (statf.MTIME);
 	}
 	if (opt && opt[U])
-		return (statf.st_atim);
+		return (statf.ATIME);
 	if (opt && opt[C])
-		return (statf.st_ctim);
-	return (statf.st_mtim);
+		return (statf.CTIME);
+	return (statf.MTIME);
 }
 
 void				order_list_t(char **tab, int qty, int order[], char *opt)
