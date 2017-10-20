@@ -118,7 +118,7 @@ void			list_dir(char *opt, char *av, DIR *inp, int context)
 	{
 		if (!(readtab[i] = mem_make_dirent(readdir(dir_id))))
 			break ;
-		if ((i + 1) % 5 == 0 && i != 0)
+		if ((i + 1) % 50 == 0 && i != 0)
 			readtab = realloc_dirent(readtab, i);
 	}
 	list_tool(opt, readtab, av, i);

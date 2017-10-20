@@ -18,12 +18,12 @@ struct dirent	**f_ilter(char *inp)
 
 	if (!inp || inp[0] == '-')
 		return (NULL);
-	if (!(tab_out = malloc(sizeof(struct dirent *) * 6)))
+	if (!(tab_out = malloc(sizeof(struct dirent *) * 51)))
 	{
 		ft_putstr("Lacking memory to properly process\n");
 		return (NULL);
 	}
-	ft_bzero(tab_out, sizeof(struct dirent *) * 6);
+	ft_bzero(tab_out, sizeof(struct dirent *) * 51);
 	return (tab_out);
 }
 
